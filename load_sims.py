@@ -39,7 +39,6 @@ for ss in sampling_lengths:
 
 	gqi_odf = gqi_fit.odf(sphere)
 
-
 	r=np.vstack((r,gqi_odf))
 
 show_odfs(r[:,None,None], sphere)

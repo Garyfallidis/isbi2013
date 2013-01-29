@@ -33,7 +33,12 @@ def tv_denoise_4d(im, weight=100, eps=2.e-4, n_iter_max=200):
 
     Examples
     ---------
-    pass
+    x, y, z, k = np.ogrid[0:40, 0:40, 0:40, 0:40]
+    mask = (x -22)**2 + (y - 20)**2 + (z - 17)**2 + (k -20)**2 < 8**2
+    mask = mask.astype(np.float)
+    mask += 0.2*np.random.randn(*mask.shape)
+    res = tv_denoise_4d(mask, weight=0.1)
+
     """
     px = np.zeros_like(im)
     py = np.zeros_like(im)

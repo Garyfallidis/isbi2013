@@ -29,4 +29,4 @@ sphere = get_sphere('symmetric724')
 gqi_odf = gqi_fit.odf(sphere)
 
 #show_odfs(gqi_odf[25-7:25+7, 25-7:25+7, 21, None], sphere)
-show_odfs(gqi_odf[25-5:25+5, 25-5:25+5, 20:31], sphere)
+show_odfs(gqi_odf[25-5:25+5, 25-5:25+5, 25][:, None], sphere)
