@@ -71,13 +71,13 @@ def tv_denoise_4d(im, weight=100, eps=2.e-4, n_iter_max=200):
         E += weight * norm.sum()
         norm *= 0.5 / weight
         norm += 1.
-        px -= 1./6.*gx
+        px -= 1./8.*gx
         px /= norm
-        py -= 1./6.*gy
+        py -= 1./8.*gy
         py /= norm
-        pz -= 1/6.*gz
+        pz -= 1/8.*gz
         pz /= norm
-        pk -= 1./6.*gk
+        pk -= 1./8.*gk
         pk /= norm
 
         E /= float(im.size)
