@@ -34,7 +34,7 @@ NN = gtab.bvals.shape[0]
 
 SNR = 50.
 
-print('SNR = {} with {} gradients direction'.format(SNR,gtab.bvals.shape[0]))
+print('SNR = {} with {} gradients direction ({}-{})'.format(SNR,gtab.bvals.shape[0],bmin,bmax))
 
 
 # if angle = [rot1,rot2], you start with somethign aligned on Z you then rotate it
@@ -65,11 +65,11 @@ idx = np.argsort(S)
 weigt = np.ones_like(S)
 weigt[idx[:nb_min_max]] = min_max_weigt
 weigt[idx[-nb_min_max:]] = min_max_weigt
-
+print('weigt = {} for {}'.format(min_max_weigt,nb_min_max))
 
 def fit_quality_mt(S_gt,wts,lam, gtab,mevalss, angles=[(0, 0), (90, 0)],
                     fractions=[50, 50]):
-    S, sticks = MultiTensor(gtab, mevalss, 100, angles,fractions, SNR)
+    S, sticks = MultiTensor(gtab, mevalss, 100, angles,fractions, None)
     # return (wts*(np.abs(S - S_gt))).sum()
     return (wts*((S-S_gt)**2)).sum()
     #return ((S-S_gt)**2).sum() + lam * (wts*np.abs(S - S_gt)).sum()
@@ -79,8 +79,8 @@ def metric_for_pso(pm):
     return fit_quality_mt(S,weigt,1., gtab, np.array([[pm[0],pm[1],pm[1]],[pm[2],pm[3],pm[3]],[pm[4],pm[5],pm[5]]]), angles=[(pm[6], pm[7]), (pm[8], pm[9]), (pm[10], pm[11])],fractions=[33.3, 33.3, 33.4])
 
 
-# bounds = np.array([[0.001,0.003],[0.0001,0.0005],[0.001,0.003],[0.0001,0.0005],[0.001,0.003],[0.0001,0.0005], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90]])  # ,[25, 75]])
-bounds = np.array([[0.0016,0.0018],[0.0002,0.0004],[0.0016,0.0018],[0.0002,0.0004],[0.0016,0.0018],[0.0002,0.0004], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90]])  # ,[25, 75]])
+bounds = np.array([[0.001,0.003],[0.0001,0.0005],[0.001,0.003],[0.0001,0.0005],[0.001,0.003],[0.0001,0.0005], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90]])  # ,[25, 75]])
+# bounds = np.array([[0.0016,0.0018],[0.0002,0.0004],[0.0016,0.0018],[0.0002,0.0004],[0.0016,0.0018],[0.0002,0.0004], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90]])  # ,[25, 75]])
 # bounds = np.array([[0.0001,0.01],[0.0001,0.01],[0.0001,0.01],[0.0001,0.01],[0.0001,0.01],[0.0001,0.01], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90], [0, 90]])  # ,[25, 75]])
 
 
@@ -91,15 +91,17 @@ def metric_for_pso_B_N(pm):
 #reset particule position if it get stuck for long
 soft_reset = 1
 npart=100
-niter=200
+niter=100
 truc = SNR
 if truc==None:
     truc = np.inf
 #stopped if the metric get below good_enough
-good_enough = 50 + (100/truc)*NN
+good_enough = 0 #50 + (0.8*(100/truc))**2*NN
 # good_enough=((NN+nb_min_max*(min_max_weigt-1)*(100/truc)**2)
 # good_enough= NN*(100/truc)
 print(npart,soft_reset,niter)
+
+print(good_enough,fit_quality_mt(S,weigt,1., gtab, mevals, ang,fractions=[33.3, 33.3, 33.4]))
 
 
 for i in range(5):
@@ -125,7 +127,7 @@ for i in range(5):
 
 # gqdir = gqfit.directions
 
-print angular_similarity(sticks, gqdir)
+# print angular_similarity(sticks, gqdir)
 
 
 from dipy.viz import fvtk
