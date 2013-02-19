@@ -25,7 +25,7 @@ print('SNR = {} with {} gradients direction (b{}-b{})'.format(SNR, gtab.bvals.sh
 
 
 
-#Test all cases: 1-3 trueFiber with 1-3 estFiber in pso, all with equal angles (not in pso) and equal eVals, for easy and tight angles
+#Test all cases: 1-3 trueFiber with 1-3 estFiber in pso, all with equal angles (not in pso) and equal eVals, for tight and tight angles
 
 mevals1 = np.array([0.0017, 0.0003, 0.0003])
 mevals2 = np.array([[0.0017, 0.0003, 0.0003], [0.0017, 0.0003, 0.0003]])
@@ -88,3 +88,350 @@ def metric_for_pso_B_N_3_tight(pm):
     pmm = bounds[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
     return fit_quality_mt(S_3_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
 
+
+
+#reset particule position if it get stuck for long
+soft_reset = 1
+npart = 100
+niter = 200
+#stopped if the metric get below good_enough
+good_enough = 0  # 50 + (0.8*(100/truc))**2*NN
+# print(npart, soft_reset, niter)
+
+from dipy.viz import fvtk
+
+
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_1, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pm[0], pm[1], pm[1]]]), angles=[(pm[2], pm[3])], fractions=frac1)
+
+as_est = angular_similarity(sk_est, sk_1)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(1,1,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_1[0], sk_1[0]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_1, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+
+as_est = angular_similarity(sk_est, sk_1)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(1,2,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_1[0], sk_1[0]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_1, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+
+as_est = angular_similarity(sk_est, sk_1)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(1,3,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_1[0], sk_1[0]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[2], sk_est[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_easy, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pm[0], pm[1], pm[1]]]), angles=[(pm[2], pm[3])], fractions=frac1)
+
+as_est = angular_similarity(sk_est, sk__2_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,1,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[0], sk_2_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[1], sk_2_easy[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_easy, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+
+as_est = angular_similarity(sk_est, sk_2_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,2,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[0], sk_2_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[1], sk_2_easy[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_easy, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+
+as_est = angular_similarity(sk_est, sk_2_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,3,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[0], sk_2_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_easy[1], sk_2_easy[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[2], sk_est[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_tight, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pm[0], pm[1], pm[1]]]), angles=[(pm[2], pm[3])], fractions=frac1)
+
+as_est = angular_similarity(sk_est, sk__2_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,1,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[0], sk_2_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[1], sk_2_tight[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_tight, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+
+as_est = angular_similarity(sk_est, sk_2_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,2,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[0], sk_2_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[1], sk_2_tight[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_2_tight, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+
+as_est = angular_similarity(sk_est, sk_2_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,3,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[0], sk_2_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_2_tight[1], sk_2_tight[1]]), fvtk.red))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[2], sk_est[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+#######################################
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_easy, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pm[0], pm[1], pm[1]]]), angles=[(pm[2], pm[3])], fractions=frac1)
+
+as_est = angular_similarity(sk_est, sk__3_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3,1,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[0], sk_3_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[1], sk_3_easy[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[2], sk_3_easy[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_easy, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+
+as_est = angular_similarity(sk_est, sk_3_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3,2,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[0], sk_3_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[1], sk_3_easy[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[2], sk_3_easy[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_easy, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+
+as_est = angular_similarity(sk_est, sk_3_easy)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,3,'easy',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[0], sk_3_easy[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[1], sk_3_easy[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_easy[2], sk_3_easy[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[2], sk_est[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_tight, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pm[0], pm[1], pm[1]]]), angles=[(pm[2], pm[3])], fractions=frac1)
+
+as_est = angular_similarity(sk_est, sk__3_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3,1,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[0], sk_3_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[1], sk_3_tight[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[2], sk_3_tight[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[1], sk[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_tight, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+
+as_est = angular_similarity(sk_est, sk_3_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3,2,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[0], sk_3_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[1], sk_3_tight[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[2], sk_3_tight[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+# fvtk.add(r, fvtk.line(np.array([-sk[2], sk[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
+pmm, fV = B_N_pso(metric_for_pso_B_N_3_tight, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, 1)
+
+pm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pmm
+
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+
+as_est = angular_similarity(sk_est, sk_3_tight)
+print('True #fiber = {}, PSO #fiber, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2,3,'tight',as_est,npart,niter))
+
+
+r = fvtk.ren()
+
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[0], sk_3_tight[0]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[1], sk_3_tight[1]]), fvtk.red))
+fvtk.add(r, fvtk.line(np.array([-sk_3_tight[2], sk_3_tight[2]]), fvtk.red))
+
+fvtk.add(r, fvtk.line(np.array([-sk_est[0], sk_est[0]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[1], sk_est[1]]), fvtk.blue))
+fvtk.add(r, fvtk.line(np.array([-sk_est[2], sk_est[2]]), fvtk.blue))
+
+fvtk.show(r)
+#######################################
