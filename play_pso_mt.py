@@ -25,14 +25,14 @@ data, affine, gtab_full = get_train_dsi(30)
 gtab = deepcopy(gtab_full)
 
 #subset of dsi gtab
-bmin = 2000
-bmax = 5000
+bmin = 1500
+bmax = 4000
 gtab.b0s_mask = gtab.b0s_mask[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
 gtab.bvecs = gtab.bvecs[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
 gtab.bvals = gtab.bvals[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
 NN = gtab.bvals.shape[0]
 
-SNR = 50.
+SNR = 30.
 
 print('SNR = {} with {} gradients direction ({}-{})'.format(SNR,gtab.bvals.shape[0],bmin,bmax))
 
