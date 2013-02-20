@@ -67,8 +67,8 @@ def fit_quality_mt(S_gt, gtab, mevalss, angles=[(0, 0), (90, 0)],
 
 
 bounds1 = np.array([[0.001, 0.003], [0.0001, 0.0005], [0, 180], [-90, 90]])  # ,[25, 75]])
-bounds2 = np.array([[0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0, 180], [-90, 90], [0, 180], [-90, 90]])  # ,[25, 75]])
-bounds3 = np.array([[0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0, 180], [-90, 90], [0, 180], [-90, 90], [0, 180], [-90, 90]])  # ,[25, 75]])
+bounds2 = np.array([[0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0, 180], [-90, 90], [0, 180], [-90, 90],[50, 95]])
+bounds3 = np.array([[0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0.001, 0.003], [0.0001, 0.0005], [0, 180], [-90, 90], [0, 180], [-90, 90], [0, 180], [-90, 90],[33.3, 95],[50, 95]])
 
 
 def metric_for_pso_B_N_est1_1(pm):
@@ -98,52 +98,52 @@ def metric_for_pso_B_N_est1_3_tight(pm):
 
 def metric_for_pso_B_N_est2_1(pm):
     pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
-    return fit_quality_mt(S_1, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+    return fit_quality_mt(S_1, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]])
 
 
 def metric_for_pso_B_N_est2_2_easy(pm):
     pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
-    return fit_quality_mt(S_2_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+    return fit_quality_mt(S_2_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]])
 
 
 def metric_for_pso_B_N_est2_2_tight(pm):
     pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
-    return fit_quality_mt(S_2_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+    return fit_quality_mt(S_2_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]])
 
 
 def metric_for_pso_B_N_est2_3_easy(pm):
     pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
-    return fit_quality_mt(S_3_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+    return fit_quality_mt(S_3_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]])
 
 
 def metric_for_pso_B_N_est2_3_tight(pm):
     pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
-    return fit_quality_mt(S_3_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+    return fit_quality_mt(S_3_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]])
 
 
 def metric_for_pso_B_N_est3_1(pm):
     pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
-    return fit_quality_mt(S_1, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+    return fit_quality_mt(S_1, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 
 def metric_for_pso_B_N_est3_2_easy(pm):
     pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
-    return fit_quality_mt(S_2_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+    return fit_quality_mt(S_2_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 
 def metric_for_pso_B_N_est3_2_tight(pm):
     pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
-    return fit_quality_mt(S_2_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+    return fit_quality_mt(S_2_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 
 def metric_for_pso_B_N_est3_3_easy(pm):
     pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
-    return fit_quality_mt(S_3_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+    return fit_quality_mt(S_3_easy, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 
 def metric_for_pso_B_N_est3_3_tight(pm):
     pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
-    return fit_quality_mt(S_3_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+    return fit_quality_mt(S_3_tight, gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 
 #reset particule position if it get stuck for long
@@ -153,7 +153,7 @@ niter = 125
 #stopped if the metric get below good_enough
 good_enough = 0  # 50 + (0.8*(100/truc))**2*NN
 # print(npart, soft_reset, niter)
-plot_it = 1
+plot_it = 0
 verbo = 0
 
 if plot_it:
@@ -183,11 +183,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_1, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_1, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]]); print([pmm[8],100-pmm[8]])
 
 as_est = angular_similarity(sk_est, sk_1)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(1, 2, 'easy', as_est, npart, niter))
@@ -205,11 +205,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_1, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_1, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.]); print([pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 as_est = angular_similarity(sk_est, sk_1)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(1, 3, 'easy', as_est, npart, niter))
@@ -250,11 +250,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_easy, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_easy, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]]); print([pmm[8],100-pmm[8]])
 
 as_est = angular_similarity(sk_est, sk_2_easy)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2, 2, 'easy', as_est, npart, niter))
@@ -272,11 +272,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_easy, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_easy, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.]); print([pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 as_est = angular_similarity(sk_est, sk_2_easy)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2, 3, 'easy', as_est, npart, niter))
@@ -316,11 +316,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_tight, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_tight, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]]); print([pmm[8],100-pmm[8]])
 
 as_est = angular_similarity(sk_est, sk_2_tight)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2, 2, 'tight', as_est, npart, niter))
@@ -338,11 +338,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_tight, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_tight, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.]); print([pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 as_est = angular_similarity(sk_est, sk_2_tight)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(2, 3, 'tight', as_est, npart, niter))
@@ -384,11 +384,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_easy, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_easy, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]]); print([pmm[8],100-pmm[8]])
 
 as_est = angular_similarity(sk_est, sk_3_easy)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3, 2, 'easy', as_est, npart, niter))
@@ -406,11 +406,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_easy, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_easy, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.]); print([pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 as_est = angular_similarity(sk_est, sk_3_easy)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3, 3, 'easy', as_est, npart, niter))
@@ -450,11 +450,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_tight, npart, 8, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_tight, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=frac2)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]]]), angles=[(pmm[4], pmm[5]), (pmm[6], pmm[7])], fractions=[pmm[8],100-pmm[8]]); print([pmm[8],100-pmm[8]])
 
 as_est = angular_similarity(sk_est, sk_3_tight)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3, 2, 'tight', as_est, npart, niter))
@@ -472,11 +472,11 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_tight, npart, 12, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_tight, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
-_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=frac3)
+_, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3], pmm[3]], [pmm[4], pmm[5], pmm[5]]]), angles=[(pmm[6], pmm[7]), (pmm[8], pmm[9]), (pmm[10], pmm[11])], fractions=[pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.]); print([pmm[12],pmm[13]*(100-pmm[12])/100.,(100-pmm[13])*(100-pmm[12])/100.])
 
 as_est = angular_similarity(sk_est, sk_3_tight)
 print('True #fiber = {}, PSO #fiber = {}, Angles = {}. AS = {}. (#particules = {}, #iter = {})'.format(3, 3, 'tight', as_est, npart, niter))
