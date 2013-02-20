@@ -1,13 +1,19 @@
 import numpy as np
 from dipy.viz import fvtk
+from dipy.viz.colormap import line_colors
 
 
-def show_gt_streamlines(streamlines, radii):
+def show_gt_streamlines(streamlines, radii, cmap='orient', r=None):
+    
+    if cmap is None:
+    	np.random.seed(42)
+    	colors = np.random.rand(len(streamlines), 3)
+    if cmap == 'orient':
+    	colors = line_colors(streamlines)
 
-    np.random.seed(42)
-    colors = np.random.rand(len(streamlines), 3)
+    if r is None:
+    	r = fvtk.ren()
 
-    r = fvtk.ren()
     for i in range(len(streamlines)):
         line_actor = fvtk.line(streamlines[i],
                   			   colors[i],
@@ -27,7 +33,10 @@ def show_gt_streamlines(streamlines, radii):
 
         fvtk.add(r, label_actor_id)
 
-    fvtk.show(r)
+    if r is None:
+    	fvtk.show(r)
+    else: 
+    	return r
 
 
 if __name__ == '__main__':
