@@ -1,3 +1,4 @@
+import numpy as np
 import nibabel as nib
 from dipy.reconst.dti import TensorModel
 from dipy.reconst.gqi import GeneralizedQSamplingModel

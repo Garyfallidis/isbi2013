@@ -17,21 +17,21 @@ def read_data(fimg, fbvals, fbvecs):
 
 
 def get_train_dti(snr=30):
-    fimg = dname + 'DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
     fbvals = dname + 'dsi-scheme.bval'
     fbvecs = dname + 'dsi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
 
 def get_train_hardi(snr=30):
-    fimg = dname + 'DWIS_hardi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fimg = dname + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + '.nii.gz'
     fbvals = dname + 'hardi-scheme.bval'
     fbvecs = dname + 'hardi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
 
 def get_train_dsi(snr=30):
-    fimg = dname + 'DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
     fbvals = dname + 'dsi-scheme.bval'
     fbvecs = dname + 'dsi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
