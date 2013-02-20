@@ -11,32 +11,34 @@ def show_gt_streamlines(streamlines, radii, cmap='orient', r=None):
     if cmap == 'orient':
     	colors = line_colors(streamlines)
 
-    if r is None:
-    	r = fvtk.ren()
+    if r is None:        
+    	ren = fvtk.ren()
+    else:
+        ren = r
 
     for i in range(len(streamlines)):
         line_actor = fvtk.line(streamlines[i],
                   			   colors[i],
                   			   linewidth=(radii[i, 1] ** 2) / 2.)
-        fvtk.add(r, line_actor)
-        label_actor = fvtk.label(r, text=str(np.round(radii[i, 1], 2)), 
+        fvtk.add(ren, line_actor)
+        label_actor = fvtk.label(ren, text=str(np.round(radii[i, 1], 2)), 
         		   					pos=(streamlines[i][0]),
         		   					scale=(.8, .8, .8),
         		   					color=(colors[i]) )
 
-        fvtk.add(r, label_actor)
+        fvtk.add(ren, label_actor)
 
-        label_actor_id = fvtk.label(r, text='[' + str(i) + ']', 
+        label_actor_id = fvtk.label(ren, text='[' + str(i) + ']', 
         		   					pos=(streamlines[i][-1]),
         		   					scale=(.8, .8, .8),
         		   					color=(colors[i]) )
 
-        fvtk.add(r, label_actor_id)
+        fvtk.add(ren, label_actor_id)
 
-    if r is None:
-    	fvtk.show(r)
-    else: 
-    	return r
+    if r is None:       
+    	fvtk.show(ren)
+    else:         
+    	return ren
 
 
 if __name__ == '__main__':
@@ -46,4 +48,4 @@ if __name__ == '__main__':
 
 	streamlines, radii = get_train_gt_fibers()
 
-	show_gt_streamlines(streamlines, radii)
+	show_gt_streamlines(streamlines, radii, 'orient', None)
