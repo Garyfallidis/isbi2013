@@ -11,34 +11,23 @@ from copy import deepcopy
 
 #reset particule position if it get stuck for long
 soft_reset = 0
-npart = 100
-niter = 125
+npart = 200
+niter = 250
 #stopped if the metric get below good_enough
 good_enough = 0  # 50 + (0.8*(100/truc))**2*NN
 # print(npart, soft_reset, niter)
 plot_it = 0
-verbo = 0
+frac_it = 0
+verbo = 1
+v1 = 0.75
+v2 = 0.75
+v3 = 0.75
 
-
-# sphere = get_sphere('symmetric724')
-# sphere = sphere.subdivide(1)
-
-# _, _, gtab_full = get_train_dsi(30)
-
-# gtab = deepcopy(gtab_full)
-
-# #subset of dsi gtab
-# bmin = 00
-# bmax = 70000
-# gtab.b0s_mask = gtab.b0s_mask[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
-# gtab.bvecs = gtab.bvecs[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
-# gtab.bvals = gtab.bvals[(gtab.bvals >= bmin) & (gtab.bvals <= bmax)]
-# NN = gtab.bvals.shape[0]
 
 # 0 : single shell
 # 1 : half DSI
 # 2 : 2 shells
-scheme = 0
+scheme = 2
 
 if scheme == 0:
 
@@ -79,6 +68,27 @@ elif scheme == 1:
 
     gtab = gradient_table(bvals, bvecs)
 
+elif scheme == 2:
+
+    #Single shell
+    bmin = 1500
+    bmax = 3000
+    NN = 18
+    f = open('../cs-dsi/data/directions/Elec{:03}.txt'.format(NN // 2 - 1))
+    _ = f.readline()
+    bvecs = np.loadtxt(f)
+    f.close()
+    bvecs = np.vstack((np.array([0., 0., 0.]), bvecs))
+    bvals = np.ones(NN + 1)
+    bvals[1:NN // 2] = bmin
+    bvals[0] = 0
+    f = open('../cs-dsi/data/directions/Elec{:03}.txt'.format(NN - (NN // 2 - 1)))
+    _ = f.readline()
+    bvecs2 = np.loadtxt(f)
+    f.close()
+    bvecs = np.vstack((bvecs, bvecs2))
+    bvals[NN // 2:] = bmin
+    gtab = gradient_table(bvals, bvecs)
 
 SNR = 30.
 
@@ -207,7 +217,7 @@ if plot_it:
 
 
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est1_1, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est1_1, npart, 4, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pm
 
@@ -229,7 +239,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_1, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_1, npart, 9, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
@@ -238,8 +248,10 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_1)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(1, 2, 'easy', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[8], 100 - pmm[8]])
+if plot_it:
+    r = fvtk.ren()
 
     r = fvtk.ren()
 
@@ -253,7 +265,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_1, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_1, npart, 14, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
@@ -278,7 +290,7 @@ if plot_it:
     fvtk.show(r)
 #######################################
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est1_2_easy, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est1_2_easy, npart, 4, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pm
 
@@ -300,7 +312,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_easy, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_easy, npart, 9, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
@@ -309,8 +321,10 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_2_easy)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(2, 2, 'easy', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[8], 100 - pmm[8]])
+if plot_it:
+    r = fvtk.ren()
 
     r = fvtk.ren()
 
@@ -324,7 +338,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_easy, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_easy, npart, 14, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
@@ -348,7 +362,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est1_2_tight, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est1_2_tight, npart, 4, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pm
 
@@ -370,7 +384,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_tight, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_2_tight, npart, 9, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
@@ -379,9 +393,9 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_2_tight)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(2, 2, 'tight', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[8], 100 - pmm[8]])
-
+if plot_it:
     r = fvtk.ren()
 
     fvtk.add(r, fvtk.line(np.array([-sk_2_tight[0], sk_2_tight[0]]), fvtk.red))
@@ -394,7 +408,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_tight, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_2_tight, npart, 14, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
@@ -403,8 +417,9 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_2_tight)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(2, 3, 'tight', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[12], pmm[13] * (100 - pmm[12]) / 100., (100 - pmm[13]) * (100 - pmm[12]) / 100.])
+if plot_it:
 
     r = fvtk.ren()
 
@@ -420,7 +435,7 @@ if plot_it:
 #######################################
 #######################################
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est1_3_easy, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est1_3_easy, npart, 4, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pm
 
@@ -442,7 +457,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_easy, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_easy, npart, 9, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
@@ -451,9 +466,9 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_3_easy)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(3, 2, 'easy', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[8], 100 - pmm[8]])
-
+if plot_it:
     r = fvtk.ren()
 
     fvtk.add(r, fvtk.line(np.array([-sk_3_easy[0], sk_3_easy[0]]), fvtk.red))
@@ -466,7 +481,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_easy, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_easy, npart, 14, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
@@ -490,7 +505,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est1_3_tight, npart, 4, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est1_3_tight, npart, 4, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds1[:, 0] + (bounds1[:, 1] - bounds1[:, 0]) * pm
 
@@ -512,7 +527,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_tight, npart, 9, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est2_3_tight, npart, 9, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds2[:, 0] + (bounds2[:, 1] - bounds2[:, 0]) * pm
 
@@ -521,8 +536,10 @@ _, sk_est = MultiTensor(gtab, np.array([[pmm[0], pmm[1], pmm[1]], [pmm[2], pmm[3
 as_est = angular_similarity(sk_est, sk_3_tight)
 print('Tru = {}, PSO = {}, Ang = {}. AS = {:.5f}. (#part = {}, #iter = {})'.format(3, 2, 'tight', as_est, npart, niter))
 
-if plot_it:
+if frac_it:
     print([pmm[8], 100 - pmm[8]])
+if plot_it:
+    r = fvtk.ren()
 
     r = fvtk.ren()
 
@@ -536,7 +553,7 @@ if plot_it:
 
     fvtk.show(r)
 #######################################
-pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_tight, npart, 14, niter, 0.75, 0.75, 0.75, soft_reset, good_enough, verbo)
+pm, fV = B_N_pso(metric_for_pso_B_N_est3_3_tight, npart, 14, niter, v1, v2, v3, soft_reset, good_enough, verbo)
 
 pmm = bounds3[:, 0] + (bounds3[:, 1] - bounds3[:, 0]) * pm
 
