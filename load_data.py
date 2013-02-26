@@ -1,36 +1,62 @@
+import numpy as np
 import nibabel as nib
 from dipy.io.gradients import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
-from dipy.reconst.gqi import GeneralizedQSamplingModel
-from dipy.data import get_sphere
-from dipy.viz.mayavi.spheres import show_odfs
+
 
 dname = 'data/'
 
-fdsi_raw = dname + 'training-data_DWIS_dsi-scheme_SNR-30.nii.gz'
-fdsi_bvals = dname + 'dsi-scheme.bval'
-fdsi_bvecs = dname + 'dsi-scheme.bvec'
 
-bvals, bvecs = read_bvals_bvecs(fdsi_bvals, fdsi_bvecs)
-gtab = gradient_table(bvals, bvecs)
-img = nib.load(fdsi_raw)
+def read_data(fimg, fbvals, fbvecs):
+    bvals, bvecs = read_bvals_bvecs(fbvals, fbvecs)
+    gtab = gradient_table(bvals, bvecs)
+    img = nib.load(fimg)
+    data = img.get_data()
+    affine = img.get_affine()
+    return data, affine, gtab
 
-data = img.get_data()
 
-gqi_model = GeneralizedQSamplingModel(gtab,
-                                      method='gqi2',
-                                      sampling_length=2,
-                                      normalize_peaks=False)
+def get_train_dti(snr=30):
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fbvals = dname + 'dsi-scheme.bval'
+    fbvecs = dname + 'dsi-scheme.bvec'
+    return read_data(fimg, fbvals, fbvecs)
 
-gqi_fit = gqi_model.fit(data)
 
-sphere = get_sphere('symmetric724')
+def get_train_hardi(snr=30):
+    fimg = dname + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fbvals = dname + 'hardi-scheme.bval'
+    fbvecs = dname + 'hardi-scheme.bvec'
+    return read_data(fimg, fbvals, fbvecs)
 
-gqi_odf = gqi_fit.odf(sphere)
 
-#show_odfs(gqi_odf[25-7:25+7, 25-7:25+7, 21, None], sphere)
-show_odfs(gqi_odf[25-5:25+5, 25-5:25+5, 25][:, None], sphere)
+def get_train_dsi(snr=30):
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+    fbvals = dname + 'dsi-scheme.bval'
+    fbvecs = dname + 'dsi-scheme.bvec'
+    return read_data(fimg, fbvals, fbvecs)
 
-from total_variation import tv_denoise_4d
 
-gqi_odf_tv = tv_denoise_4d(gqi_odf)
+def get_train_mask():
+    fimg = dname + 'training-data_mask.nii.gz'
+    img = nib.load(fimg)
+    return img.get_data(), img.get_affine()
+
+
+def get_train_rois():
+    fimg = dname + 'training-data_rois.nii.gz'
+    img = nib.load(fimg)
+    return img.get_data(), img.get_affine()
+
+
+def get_train_gt_fibers():
+    streamlines = []
+
+    for i in range(1, 21):
+        ffib = dname + '/ground-truth-fibers/fiber-'
+        ffib += str(i).zfill(2) + '.txt'
+        streamlines.append(np.loadtxt(ffib))
+
+    fradii = dname + '/ground-truth-fibers/fibers-radii.txt'    
+
+    return streamlines, np.loadtxt(fradii)
