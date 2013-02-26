@@ -7,7 +7,7 @@ from dipy.viz.mayavi.spheres import show_odfs
 
 dname = 'data/'
 
-fdsi_raw = dname + 'DWIS_dsi-scheme_SNR-30.nii.gz'
+fdsi_raw = dname + 'training-data_DWIS_dsi-scheme_SNR-30.nii.gz'
 fdsi_bvals = dname + 'dsi-scheme.bval'
 fdsi_bvecs = dname + 'dsi-scheme.bvec'
 
@@ -30,3 +30,7 @@ gqi_odf = gqi_fit.odf(sphere)
 
 #show_odfs(gqi_odf[25-7:25+7, 25-7:25+7, 21, None], sphere)
 show_odfs(gqi_odf[25-5:25+5, 25-5:25+5, 25][:, None], sphere)
+
+from total_variation import tv_denoise_4d
+
+gqi_odf_tv = tv_denoise_4d(gqi_odf)
