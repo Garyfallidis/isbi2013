@@ -25,7 +25,7 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
     If x, y, z are Nones then the full volume is shown.
 
     """
-    #if x is None and y is None and z is None:
+    # if x is None and y is None and z is None:
     #    raise ValueError('A slice should be provided')
 
     pshape = peaks.shape[:-1]
@@ -66,7 +66,6 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
                                            scale * np.vstack((-directions[i], directions[i])),
                                            np.abs(directions[i] / np.linalg.norm(directions[i])))
                     fvtk.add(r, line_actor)
-
 
                 if tuple(pos) == index:
                     line_actor = fvtk.line(pos +
