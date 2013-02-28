@@ -1,4 +1,4 @@
-
+import numpy as np
 from dipy.core.ndindex import ndindex
 from dipy.viz import fvtk
 
