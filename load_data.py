@@ -16,22 +16,37 @@ def read_data(fimg, fbvals, fbvecs):
     return data, affine, gtab
 
 
-def get_train_dti(snr=30):
-    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+def get_train_dti(snr=30, denoised=None):
+    if not denoised == None:
+        den = 'denoised'
+    else:
+        den = ''
+
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + den + '.nii.gz'
     fbvals = dname + 'dsi-scheme.bval'
     fbvecs = dname + 'dsi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
 
-def get_train_hardi(snr=30):
-    fimg = dname + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + '.nii.gz'
+def get_train_hardi(snr=30, denoised=None):
+    if not denoised == None:
+        den = 'denoised'
+    else:
+        den = ''
+
+    fimg = dname + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
     fbvals = dname + 'hardi-scheme.bval'
     fbvecs = dname + 'hardi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
 
-def get_train_dsi(snr=30):
-    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + '.nii.gz'
+def get_train_dsi(snr=30, denoised=None):
+    if not denoised == None:
+        den = 'denoised'
+    else:
+        den = ''
+
+    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + den + '.nii.gz'
     fbvals = dname + 'dsi-scheme.bval'
     fbvecs = dname + 'dsi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
@@ -57,6 +72,6 @@ def get_train_gt_fibers():
         ffib += str(i).zfill(2) + '.txt'
         streamlines.append(np.loadtxt(ffib))
 
-    fradii = dname + '/ground-truth-fibers/fibers-radii.txt'    
+    fradii = dname + '/ground-truth-fibers/fibers-radii.txt'
 
     return streamlines, np.loadtxt(fradii)
