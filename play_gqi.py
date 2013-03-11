@@ -7,8 +7,9 @@ from load_data import get_train_dsi
 
 
 data, affine, gtab = get_train_dsi(30)
-# data = data[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-# data = data[:, :, 25]
+
+#data = data[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
+data = data[:, :, 25]
 
 gqi_model = GeneralizedQSamplingModel(gtab,
                                       method='gqi2',
@@ -33,9 +34,6 @@ sphere = get_sphere('symmetric724')
 gqi_odf = gqi_fit.odf(sphere)
 
 
-#nasty_odf(b_vector, )
-
-
 from dipy.viz import fvtk
 
 r = fvtk.ren()
@@ -48,7 +46,6 @@ dsi_odf = dsi_model.fit(data).odf(sphere)
 fvtk.clear(r)
 fvtk.add(r, fvtk.sphere_funcs(dsi_odf, sphere))
 fvtk.show(r)
-
 
 def investigate_internals():
 
