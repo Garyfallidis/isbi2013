@@ -21,7 +21,12 @@ def connectivity_matrix(streamlines, rois):
     mat = np.zeros((40, 40))
     for s in srois:
         srois[s] = set(srois[s])
-        mat[tuple(srois[s])] += 1
+        #print srois[s]
+        try:
+            mat[tuple(srois[s])] += 1
+        except IndexError:
+            print IndexError
+            print srois[s]
 
     return mat, srois
 

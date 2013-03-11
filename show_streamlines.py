@@ -41,6 +41,27 @@ def show_gt_streamlines(streamlines, radii, cmap='orient', r=None):
         return ren
 
 
+def show_streamlines(streamlines, cmap='orient', opacity=1., r=None):
+
+    if r is None:
+        ren = fvtk.ren()
+    else:
+        ren = r
+    
+    if cmap == 'orient':
+        colors = line_colors(streamlines)
+
+    line_actor = fvtk.line(streamlines, colors,
+                           opacity=opacity)
+    fvtk.add(ren, line_actor)
+        
+    if r is None:
+        fvtk.show(ren)
+    else:
+        return ren
+
+
+
 if __name__ == '__main__':
 
     from load_data import get_train_gt_fibers
@@ -59,5 +80,5 @@ if __name__ == '__main__':
     
     mat, srois = connectivity_matrix(streamlines, rois)
     
-    
+    np.save('train_connmat.npy', mat)
 
