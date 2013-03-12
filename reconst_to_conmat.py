@@ -13,6 +13,8 @@ from load_data import get_train_dsi, get_train_rois, get_train_mask
 from show_streamlines import show_streamlines
 from conn_mat import connectivity_matrix
 
+from dipy.io.pickles import save_pickle, load_pickle
+
 from time import time
 
 
@@ -71,11 +73,11 @@ if __name__ == '__main__':
     # data = data[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
     # data = data[:, :, 25]
 
-    model_tag = 'gqi_'
+    model_tag = 'gqi2_'
 
     model = GeneralizedQSamplingModel(gtab,
                                       method='gqi2',
-                                      sampling_length=3,
+                                      sampling_length=2.5,
                                       normalize_peaks=False)
 
     # model = DiffusionSpectrumDeconvModel(gtab)
@@ -93,17 +95,15 @@ if __name__ == '__main__':
 
     nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
 
-
-    stream_filename = 'streams.trk'
     seeds_per_vox = 9
     num_of_cpus = 6
 
-    cmd = 'python ~/Devel/scilpy/scripts/stream_local.py -odf odf_sh.nii.gz -m data/training-data_mask.nii.gz -s data/training-data_rois.nii.gz -n -' + \
-           str(seeds_per_vox) +' -process ' + str(num_of_cpus) + ' -o streams.trk -maximum'
+    cmd = 'python ~/Devel/scilpy/scripts/stream_local.py -odf ' + model_tag + 'odf_sh.nii.gz -m data/training-data_mask.nii.gz -s data/training-data_rois.nii.gz -n -' + \
+           str(seeds_per_vox) +' -process ' + str(num_of_cpus) + ' -o ' + model_tag + 'streams.trk -maximum'
     pipe(cmd)
 
-    mat, conn_mats, diffs = streams_to_connmat(model_tag + 'streams.trk', 9)
+    mat, conn_mats, diffs = streams_to_connmat(model_tag + 'streams.trk', 9)  
 
-
+    save_pickle(model_tag + 'conn_mats.pkl', {'mat':mat, 'conn_mats':conn_mats, 'diffs':diffs})
 
 
