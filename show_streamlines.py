@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     from conn_mat import connectivity_matrix
     
-    mat, srois = connectivity_matrix(streamlines, rois)
+    mat, srois, ratio = connectivity_matrix(streamlines, rois)
     
     np.save('train_connmat.npy', mat)
 
