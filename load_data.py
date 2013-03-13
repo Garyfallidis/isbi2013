@@ -18,13 +18,13 @@ def read_data(fimg, fbvals, fbvecs):
 
 def get_train_dti(snr=30, denoised=None):
     if not denoised == None:
-        den = 'denoised'
+        den = '_denoised_nlmeans'
     else:
         den = ''
 
-    fimg = dname + 'training-data_DWIS_dsi-scheme_SNR-' + str(snr) + den + '.nii.gz'
-    fbvals = dname + 'dsi-scheme.bval'
-    fbvecs = dname + 'dsi-scheme.bvec'
+    fimg = dname + 'training-data_DWIS_dti-scheme_SNR-' + str(snr) + den + '.nii.gz'
+    fbvals = dname + 'dti-scheme.bval'
+    fbvecs = dname + 'dti-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
 
