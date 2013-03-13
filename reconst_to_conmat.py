@@ -1,4 +1,4 @@
-
+import numpy as np
 import nibabel as nib
 
 from subprocess import Popen, PIPE
@@ -13,8 +13,9 @@ from load_data import get_train_dsi, get_train_rois, get_train_mask
 from show_streamlines import show_streamlines
 from conn_mat import connectivity_matrix
 
-from time import time
+from dipy.io.pickles import save_pickle, load_pickle
 
+from time import time
 
 
 def pipe(cmd):
@@ -28,51 +29,81 @@ def pipe(cmd):
     print(sto)
     print(ste)
 
-data, affine, gtab = get_train_dsi(30)
-mask, affine = get_train_mask()
 
-# data = data[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-# data = data[:, :, 25]
+def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
 
-# model = GeneralizedQSamplingModel(gtab,
-#                                   method='gqi2',
-#                                   sampling_length=3,
-#                                   normalize_peaks=False)
+    streams, hdr = nib.trackvis.read(filename)
+    streamlines = [s[0] for s in streams]
 
-model = DiffusionSpectrumDeconvModel(gtab)
+    #show_streamlines(streamlines, opacity=0.5)
 
-t0 = time()
+    rois, affine = get_train_rois()
 
-fit = model.fit(data, mask)
+    mat, srois, ratio = connectivity_matrix(streamlines, rois)
 
-sphere = get_sphere('symmetric724')
+    golden_mat = np.load('train_connmat.npy')
 
-odf = fit.odf(sphere)
+    lr = []
+    for i in range(1, 41):
+        lr.append(np.sum(rois==i))
 
-t1 = time()
+    lr = seeds_per_voxel * np.array(lr, dtype='f8')
 
-print t1 - t0
+    mat /= lr
 
-odf_sh = sf_to_sh(odf, sphere, sh_order=8,
-                  basis_type='mrtrix')
+    mat += mat.T
 
-nib.save(nib.Nifti1Image(odf_sh, affine), 'odf_sh.nii.gz')
+    golden_mat += golden_mat.T
 
-cmd = 'python ~/Devel/scilpy/scripts/stream_local.py -odf odf_sh.nii.gz -m data/training-data_mask.nii.gz -s data/training-data_rois.nii.gz -n -1 -process 1 -o streams.trk -maximum'
-pipe(cmd)
+    conn_mats = []
+    diffs = []
+    for th in thr:
+        conn_mat = mat > th
+        conn_mats.append(conn_mat)
+        diffs.append(np.sum(np.abs(conn_mat-golden_mat)))
 
-streams, hdr = nib.trackvis.read('streams.trk')
+    return mat, conn_mats, diffs
 
-streamlines = [s[0] for s in streams]
 
-show_streamlines(streamlines, opacity=0.5)
+if __name__ == '__main__':
 
-rois, affine = get_train_rois()
+    data, affine, gtab = get_train_dsi(30)
+    mask, affine = get_train_mask()
 
-mat, srois = connectivity_matrix(streamlines, rois)
+    # data = data[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
+    # data = data[:, :, 25]
 
-golden_mat = np.load('train_connmat.npy')
+    model_tag = 'gqi2_'
 
-mat += mat.T
+    model = GeneralizedQSamplingModel(gtab,
+                                      method='gqi2',
+                                      sampling_length=2.5,
+                                      normalize_peaks=False)
 
-golden_mat += golden_mat.T
+    # model = DiffusionSpectrumDeconvModel(gtab)
+
+    fit = model.fit(data, mask)
+
+    sphere = get_sphere('symmetric724')
+
+    odf = fit.odf(sphere)
+    
+    nib.save(nib.Nifti1Image(odf, affine), model_tag + 'odf.nii.gz')
+
+    odf_sh = sf_to_sh(odf, sphere, sh_order=8,
+                      basis_type='mrtrix')
+
+    nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
+
+    seeds_per_vox = 9
+    num_of_cpus = 6
+
+    cmd = 'python ~/Devel/scilpy/scripts/stream_local.py -odf ' + model_tag + 'odf_sh.nii.gz -m data/training-data_mask.nii.gz -s data/training-data_rois.nii.gz -n -' + \
+           str(seeds_per_vox) +' -process ' + str(num_of_cpus) + ' -o ' + model_tag + 'streams.trk -maximum'
+    pipe(cmd)
+
+    mat, conn_mats, diffs = streams_to_connmat(model_tag + 'streams.trk', 9)  
+
+    save_pickle(model_tag + 'conn_mats.pkl', {'mat':mat, 'conn_mats':conn_mats, 'diffs':diffs})
+
+
