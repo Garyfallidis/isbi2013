@@ -8,12 +8,13 @@ from dipy.reconst.dti import TensorModel
 from dipy.reconst.gqi import GeneralizedQSamplingModel
 from dipy.reconst.dsi import DiffusionSpectrumDeconvModel
 from dipy.data import get_sphere
-from dipy.viz.mayavi.spheres import show_odfs
+#from dipy.viz.mayavi.spheres import show_odfs
 from dipy.reconst.shm import sf_to_sh
 
 from load_data import get_train_dsi, get_train_rois, get_train_mask
 from show_streamlines import show_streamlines
 from conn_mat import connectivity_matrix
+from total_variation import tv_denoise_4d
 
 from dipy.io.pickles import save_pickle, load_pickle
 
@@ -67,6 +68,7 @@ def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
     return mat, conn_mats, diffs
 
 
+
 if __name__ == '__main__':
 
     data, affine, gtab = get_train_dsi(30)
@@ -113,6 +115,9 @@ if __name__ == '__main__':
 
     odf = fit.odf(sphere)
 
+    
+
+
     #nib.save(nib.Nifti1Image(odf, affine), model_tag + 'odf.nii.gz')
 
     odf_sh = sf_to_sh(odf, sphere, sh_order=8,
@@ -142,10 +147,15 @@ if __name__ == '__main__':
     from dipy.viz import fvtk
 
     #odf = odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-    # r = fvtk.ren()
-    # fvtk.add(r, fvtk.sphere_funcs(odf, sphere))
-    # fvtk.show(r)
-    # fvtk.clear(r)
+    r = fvtk.ren()
+    fvtk.add(r, fvtk.sphere_funcs(odf, sphere))
+    fvtk.show(r)
+    fvtk.clear(r)
+
+    odf_var = tv_denoise_4d(odf, weight=0.1)
+    fvtk.add(r, fvtk.sphere_funcs(odf_var, sphere))
+    fvtk.show(r)
+    fvtk.clear(r)
 
     # #odf_sh2 = odf_sh[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
     # odf2 = np.dot(odf_sh, B_regul.T)
