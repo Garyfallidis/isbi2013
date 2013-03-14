@@ -96,6 +96,29 @@ def get_test_dsi(snr=30, denoised=None):
     return read_data(fimg, fbvals, fbvecs)
 
 
+def get_specific_data(training, category, snr, denoise):
+
+    if denoise == False:
+        denoise = None
+
+    if training == True:
+        if category == 'dti':
+            return get_train_dti(snr, denoise)
+        if category == 'hardi':
+            return get_train_hardi(snr, denoise)
+        if category == 'dsi':
+            return get_train_dsi(snr, denoise)
+
+    if training == False:
+        if category == 'dti':
+            return get_test_dti(snr, denoise)
+        if category == 'hardi':
+            return get_test_hardi(snr, denoise)
+        if category == 'dsi':
+            return get_test_dsi(snr, denoise)
+
+
+
 def get_train_mask():
     fimg = dname + 'training-data_mask.nii.gz'
     img = nib.load(fimg)
