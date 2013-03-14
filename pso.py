@@ -149,7 +149,8 @@ def B_N_pso(f, S, n, maxit, w, phi_p, phi_g, soft_reset, good_enough, verbose):
                     
                     #number of iteration after a soft_reset before we can reset again
                     flag = 25
-                    print('iter = {}, best value = {}, RESET!'.format(iter, fg))
+                    if verbose:
+                        print('iter = {}, best value = {}, RESET!'.format(iter, fg))
 
         if verbose:
             if (iter % 25) == 0:
@@ -157,7 +158,8 @@ def B_N_pso(f, S, n, maxit, w, phi_p, phi_g, soft_reset, good_enough, verbose):
 
         iter += 1
         flag -= 1
-    print('iter = {}, best value = {}'.format(iter, fg))
+    if verbose:
+        print('iter = {}, best value = {}'.format(iter, fg))
     return g, fg
 
 #this is crap
