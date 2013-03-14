@@ -41,28 +41,26 @@ data, affine, gtab = get_specific_data(training[0],
                                        snrs[0],
                                        denoised_data[1])
 
+
 def create_file_prefix(training, category, snr, denoised, odf_deconv, tv, method):
 
     if training:
         filename = 'train'
     else:
         filename = 'test'
-    filename += '_' + str(category) + '_snr_' + str(snr) + '_denoised_' 
+    filename += '_' + str(category) + '_snr_' + str(snr) + '_denoised_'
     filename += str(int(denoised)) + '_odeconv_' + str(int(odf_deconv))
     filename += '_tv_' + str(int(tv)) + '__' + method
 
     return filename
 
-print create_file_prefix(training[1],
-                         categories[0],
-                         snrs[0],
-                         denoised_data[0],
-                         False,
-                         False,
-                         'csd_8')
-
-1/0
-
+prefix = create_file_prefix(training[0],
+                            categories[0],
+                            snrs[0],
+                            denoised_data[1],
+                            False,
+                            False,
+                            'csd_8_362')
 
 mask, affine = get_train_mask()
 
@@ -75,6 +73,8 @@ FA = fractional_anisotropy(tenfit.evals)
 FA[np.isnan(FA)] = 0
 
 mask[FA <= 0.1] = 0
+
+mask[FA > 1.] = 0
 
 indices = np.where(FA > 0.7)
 
@@ -98,14 +98,12 @@ sphere = get_sphere('symmetric724')
 
 odf = csd_fit.odf(sphere)
 
-#fname = 
-
-nib.save(nib.Nifti1Image(odf, affine), 'odf.nii.gz')
+nib.save(nib.Nifti1Image(odf, affine), prefix + 'odf.nii.gz')
 
 odf_sh = sf_to_sh(odf, sphere, sh_order=8,
                   basis_type='mrtrix')
 
-nib.save(nib.Nifti1Image(odf_sh, affine), 'odf_sh.nii.gz')
+nib.save(nib.Nifti1Image(odf_sh, affine), prefix + 'odf_sh.nii.gz')
 
 from dipy.viz import fvtk
 r = fvtk.ren()
