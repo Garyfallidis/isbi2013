@@ -44,27 +44,21 @@ if __name__ == '__main__':
 
     evals = np.array([l01[0], l01[1], l01[1]])
 
-
-    # csd_model = ConstrainedSphericalDeconvModel(gtab, (evals, S0))
-
-    # csd_fit = csd_model.fit(data[25 - 10:25 + 10, 25 - 10:25 + 10, 25])
-
     from dipy.data import get_sphere
-
     sphere = get_sphere('symmetric724')
 
-    # csd_odf = csd_fit.odf(sphere)
+    csd_model = ConstrainedSphericalDeconvModel(gtab, (evals, S0), regul_sphere = sphere)
+    csd_fit = csd_model.fit(data[25 - 10:25 + 10, 25 - 10:25 + 10, 25])
+    csd_odf = csd_fit.odf(sphere)
 
-    # from dipy.viz import fvtk
-    # r = fvtk.ren()
-    # fvtk.add(r, fvtk.sphere_funcs(csd_odf, sphere))
-    # fvtk.show(r)
+    from dipy.viz import fvtk
+    r = fvtk.ren()
+    fvtk.add(r, fvtk.sphere_funcs(csd_odf, sphere))
+    fvtk.show(r)
+    
 
-
-    csdt_model = ConstrainedSDTModel(gtab, ratio = l01[1] / l01[0])
-
+    csdt_model = ConstrainedSDTModel(gtab, ratio = l01[1] / l01[0], regul_sphere = sphere)
     csdt_fit = csdt_model.fit(data[25 - 10:25 + 10, 25 - 10:25 + 10, 25])
-
     csdt_odf = csdt_fit.odf(sphere)
 
     from dipy.viz import fvtk
