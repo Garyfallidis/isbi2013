@@ -100,12 +100,12 @@ if __name__ == '__main__':
 
     model_tag = 'dsdeconv_'
 
-    # model = GeneralizedQSamplingModel(gtab,
-    #                                   method='gqi2',
-    #                                   sampling_length=3.,
-    #                                   normalize_peaks=False)
+    model = GeneralizedQSamplingModel(gtab,
+                                      method='gqi2',
+                                      sampling_length=3.,
+                                      normalize_peaks=False)
 
-    model = DiffusionSpectrumDeconvModel(gtab)
+    #model = DiffusionSpectrumDeconvModel(gtab)
 
     fit = model.fit(data, mask)
 
@@ -122,10 +122,10 @@ if __name__ == '__main__':
 
     from dipy.reconst.csdeconv import odf_sh_to_sharp
 
-    reg_sphere = get_sphere('symmetric362')
+    reg_sphere = get_sphere('symmetric724')
 
     fodf_sh = odf_sh_to_sharp(odf_sh,
-                              reg_sphere, basis='mrtrix', ratio=3 / 15.,
+                              reg_sphere, basis='mrtrix', ratio=3.8 / 16.6,
                               sh_order=8, Lambda=1., tau=1.)
 
     # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'fodf_sh.nii.gz')
@@ -142,16 +142,16 @@ if __name__ == '__main__':
     from dipy.viz import fvtk
 
     #odf = odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-    r = fvtk.ren()
-    fvtk.add(r, fvtk.sphere_funcs(odf, sphere))
-    fvtk.show(r)
-    fvtk.clear(r)
+    # r = fvtk.ren()
+    # fvtk.add(r, fvtk.sphere_funcs(odf, sphere))
+    # fvtk.show(r)
+    # fvtk.clear(r)
 
-    #odf_sh2 = odf_sh[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-    odf2 = np.dot(odf_sh, B_regul.T)
-    fvtk.add(r, fvtk.sphere_funcs(odf2, sphere))
-    fvtk.show(r)
-    fvtk.clear(r)
+    # #odf_sh2 = odf_sh[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
+    # odf2 = np.dot(odf_sh, B_regul.T)
+    # fvtk.add(r, fvtk.sphere_funcs(odf2, sphere))
+    # fvtk.show(r)
+    # fvtk.clear(r)
 
     r = fvtk.ren()
     fvtk.add(r, fvtk.sphere_funcs(fodf, sphere))
