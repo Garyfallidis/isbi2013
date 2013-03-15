@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import nibabel as nib
 
@@ -132,8 +130,8 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
                                 tv,
                                 method)
 
-    if training:
-        mask, affine = get_train_mask()
+    if training:        
+        mask = nib.load('wm_mask_hardi_01.nii.gz').get_data()
     else:
         mask = np.zeros(data.shape[:-1])
 
@@ -143,8 +141,6 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
 
     FA = fractional_anisotropy(tenfit.evals)
     FA[np.isnan(FA)] = 0
-
-    1/0
 
     mask[FA <= 0.1] = 0
     mask[FA > 1.] = 0
@@ -173,9 +169,7 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
 
     sphere = get_sphere('symmetric724')
 
-    odf = csd_fit.odf(sphere)
-
-    odf[mask == 0] = np.zeros(odf.shape[-1])
+    odf = csd_fit.odf(sphere)    
 
     if tv == True:
 
@@ -209,7 +203,7 @@ if __name__ == '__main__':
 
     t0 = time()
 
-    # diffs = csd(training=True, category='dti', snr=10, denoised=False, odeconv=False, tv=False, method='csd_')
-    diffs = csd(training=True, category='dti', snr=30, denoised=False, odeconv=False, tv=False, method='csd_')
-
+    # diffs = csd(training=True, category='dti', snr=10, denoised=False, odeconv=False, tv=False, method='csd_')    
+    diffs = csd(training=False, category='dti', snr=30, denoised=False, odeconv=False, tv=False, method='csd_')
+    
     print time() - t0
