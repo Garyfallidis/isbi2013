@@ -53,7 +53,7 @@ def PSO_N(f, S=100, n=10, maxit=100, w=0.75, phi_p=0.5, phi_g=0.5, verbose=0):
         swarm[swarm > 1] = 1
 
         # update particle's position value and best position
-        for part in range(S):
+        for part in xrange(S):
             fswarm[part] = f(swarm[part, :].squeeze())
             if fswarm[part] < fp[part]:
                 fp[part] = fswarm[part]
@@ -84,12 +84,12 @@ def run_PSO(signal, gtab, NC=2, iso=0, fr=0, bounds=None, metric=0, S=100,
         bounds_fr = np.array([[0.0, 100.0]])
 
         bounds = bounds_NC
-        for i in range(NC - 1):
+        for i in xrange(NC - 1):
             bounds = np.vstack((bounds, bounds_NC))
         if iso:
             bounds = np.vstack((bounds, bounds_iso))
         if fr:
-            for i in range(NC - 1):
+            for i in xrange(NC - 1):
                 bounds = np.vstack((bounds, bounds_fr))
 
     # print bounds

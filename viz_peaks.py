@@ -1,3 +1,4 @@
+import sys
 import nibabel as nib
 import numpy as np
 from dipy.core.ndindex import ndindex
@@ -80,5 +81,6 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
 
 if __name__ == '__main__':
 
-    peaks = nib.load('peaks.nii.gz').get_data()
-    show_peak_directions(peaks, x=None, y=None, z=5, show_axes=True)
+    peaks = nib.load(sys.argv[1]).get_data()
+
+    show_peak_directions(peaks, x=None, y=None, z=25, show_axes=True)
