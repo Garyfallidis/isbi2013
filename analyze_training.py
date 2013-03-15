@@ -10,7 +10,10 @@ from dipy.reconst.csdeconv import ConstrainedSDTModel
 from dipy.data import get_sphere
 from dipy.viz.mayavi.spheres import show_odfs
 from dipy.reconst.shm import sf_to_sh
-from dipy.data import get_sphere
+from dipy.reconst.shm import real_sph_harm_mrtrix
+from dipy.core.geometry import cart2sphere
+
+
 from dipy.core.ndindex import ndindex
 from dipy.reconst.odf import peak_directions
 
@@ -29,7 +32,8 @@ categories = ['dti', 'hardi', 'dsi']
 snrs = [10, 20, 30]
 odf_deconvs = [True, False]
 total_variations = [True, False]
-denoised_data = [True, False]
+denoised_data = [0, 1, 2, 3]  # not denoised, coupe, rician, gaussian
+
 
 dname = 'data/'
 dres = 'results/'
@@ -115,7 +119,7 @@ def training_check(dres, prefix):
     return diffs
 
 
-def csd(training, category, snr, denoised, odeconv, tv, method):
+def prepare(training, category, snr, denoised, odeconv, tv, method):
 
     data, affine, gtab = get_specific_data(training,
                                            category,
@@ -130,10 +134,10 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
                                 tv,
                                 method)
 
-    if training:        
+    if training:
         mask = nib.load('wm_mask_hardi_01.nii.gz').get_data()
     else:
-        mask = np.zeros(data.shape[:-1])
+        mask = np.ones(data.shape[:-1])
 
     tenmodel = TensorModel(gtab)
 
@@ -151,6 +155,7 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
     S0 = np.mean(S0s)
 
     if S0 == 0:
+        print 'S0 equals to 0 switching to 1'
         S0 = 1
 
     l01 = np.mean(lambdas, axis=0)
@@ -158,6 +163,19 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
     evals = np.array([l01[0], l01[1], l01[1]])
 
     print evals, S0
+
+    return data, affine, gtab, mask, evals, S0, prefix
+
+
+def csd(training, category, snr, denoised, odeconv, tv, method):
+
+    data, affine, gtab, mask, evals, S0, prefix = prepare(training,
+                                                          category,
+                                                          snr,
+                                                          denoised,
+                                                          odeconv,
+                                                          tv,
+                                                          method)
 
     if category == 'dti':
         csd_model = ConstrainedSphericalDeconvModel(gtab, (evals, S0), sh_order=6)
@@ -169,7 +187,7 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
 
     sphere = get_sphere('symmetric724')
 
-    odf = csd_fit.odf(sphere)    
+    odf = csd_fit.odf(sphere)
 
     if tv == True:
 
@@ -179,7 +197,57 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
 
 
 def gqi(training, category, snr, denoised, odeconv, tv, method):
-    pass
+
+    data, affine, gtab, mask, evals, S0, prefix = prepare(training,
+                                                          category,
+                                                          snr,
+                                                          denoised,
+                                                          odeconv,
+                                                          tv,
+                                                          method)
+    
+
+
+    model = GeneralizedQSamplingModel(gtab,
+                                      method='gqi2',
+                                      sampling_length=3.,
+                                      normalize_peaks=False)
+
+    fit = model.fit(data, mask)
+
+    sphere = get_sphere('symmetric724')   
+
+    odf = fit.odf(sphere)
+
+    if odeconv == True:
+
+        odf_sh = sf_to_sh(odf, sphere, sh_order=8,
+                          basis_type='mrtrix')
+
+        # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
+
+        from dipy.reconst.csdeconv import odf_sh_to_sharp
+
+        reg_sphere = get_sphere('symmetric724')
+
+        fodf_sh = odf_sh_to_sharp(odf_sh,
+                                  reg_sphere, basis='mrtrix', ratio=3.8 / 16.6,
+                                  sh_order=8, Lambda=1., tau=1.)
+
+        # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'fodf_sh.nii.gz')
+
+        r, theta, phi = cart2sphere(sphere.x, sphere.y, sphere.z)
+        B_regul, m, n = real_sph_harm_mrtrix(8, theta[:, None], phi[:, None])
+
+        fodf = np.dot(fodf_sh, B_regul.T)
+
+        odf = fodf
+
+    if tv == True:
+
+        odf = tv_denoise_4d(odf, weight=0.1)
+
+    save_odfs_peaks(training, fodf, affine, sphere, dres, prefix)
 
 
 def show_odf_sample(filename):
@@ -203,7 +271,11 @@ if __name__ == '__main__':
 
     t0 = time()
 
-    # diffs = csd(training=True, category='dti', snr=10, denoised=False, odeconv=False, tv=False, method='csd_')    
-    diffs = csd(training=False, category='dti', snr=30, denoised=False, odeconv=False, tv=False, method='csd_')
-    
+    # diffs = csd(training=True, category='dti', snr=10, denoised=0, odeconv=False, tv=False, method='csd_')
+    # diffs = csd(training=True, category='dti', snr=10, denoised=2, odeconv=False, tv=False, method='csd_')
+    # diffs = csd(training=False, category='dti', snr=10, denoised=0, odeconv=False, tv=False, method='csd_')
+    # diffs = csd(training=False, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
+
+    print diffs
     print time() - t0
