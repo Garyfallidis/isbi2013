@@ -29,8 +29,8 @@ def pipe(cmd):
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     sto = p.stdout.readlines()
     ste = p.stderr.readlines()
-    print(sto)
-    print(ste)
+    #print(sto)
+    #print(ste)
 
 
 def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
