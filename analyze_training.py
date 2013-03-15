@@ -12,7 +12,7 @@ from dipy.viz.mayavi.spheres import show_odfs
 from dipy.reconst.shm import sf_to_sh
 from dipy.reconst.shm import real_sph_harm_mrtrix
 from dipy.core.geometry import cart2sphere
-
+from dipy.reconst.csdeconv import odf_sh_to_sharp
 
 from dipy.core.ndindex import ndindex
 from dipy.reconst.odf import peak_directions
@@ -226,7 +226,7 @@ def gqi(training, category, snr, denoised, odeconv, tv, method):
 
         # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
 
-        from dipy.reconst.csdeconv import odf_sh_to_sharp
+        
 
         reg_sphere = get_sphere('symmetric724')
 
@@ -235,6 +235,8 @@ def gqi(training, category, snr, denoised, odeconv, tv, method):
                                   sh_order=8, Lambda=1., tau=1.)
 
         # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'fodf_sh.nii.gz')
+
+        fodf_sh[np.isnan(fodf_sh)]=0
 
         r, theta, phi = cart2sphere(sphere.x, sphere.y, sphere.z)
         B_regul, m, n = real_sph_harm_mrtrix(8, theta[:, None], phi[:, None])
@@ -247,7 +249,7 @@ def gqi(training, category, snr, denoised, odeconv, tv, method):
 
         odf = tv_denoise_4d(odf, weight=0.1)
 
-    save_odfs_peaks(training, fodf, affine, sphere, dres, prefix)
+    save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
 def show_odf_sample(filename):

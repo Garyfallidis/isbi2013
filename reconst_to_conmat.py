@@ -152,10 +152,10 @@ if __name__ == '__main__':
     fvtk.show(r)
     fvtk.clear(r)
 
-    odf_var = tv_denoise_4d(odf, weight=0.1)
-    fvtk.add(r, fvtk.sphere_funcs(odf_var, sphere))
-    fvtk.show(r)
-    fvtk.clear(r)
+    # odf_var = tv_denoise_4d(odf, weight=0.1)
+    # fvtk.add(r, fvtk.sphere_funcs(odf_var, sphere))
+    # fvtk.show(r)
+    # fvtk.clear(r)
 
     # #odf_sh2 = odf_sh[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
     # odf2 = np.dot(odf_sh, B_regul.T)
