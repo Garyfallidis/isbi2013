@@ -8,10 +8,10 @@ def show_odf_sample(filename):
     from dipy.data import get_sphere
 
     sphere = get_sphere('symmetric724')
-    
+
     from dipy.viz import fvtk
     r = fvtk.ren()
-    # fvtk.add(r, fvtk.sphere_funcs(odf[:, :, 25], sphere))
+    #fvtk.add(r, fvtk.sphere_funcs(odf[:, :, 25], sphere))
     fvtk.add(r, fvtk.sphere_funcs(odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25], sphere))
     fvtk.show(r)
 

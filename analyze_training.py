@@ -196,6 +196,35 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
+def sdt(training, category, snr, denoised, odeconv, tv, method):
+
+    data, affine, gtab, mask, evals, S0, prefix = prepare(training,
+                                                          category,
+                                                          snr,
+                                                          denoised,
+                                                          odeconv,
+                                                          tv,
+                                                          method)
+
+    if category == 'dti':
+        csdt_model = ConstrainedSDTModel(gtab, ratio = evals[1] / evals[0], sh_order=6)
+       
+    if category == 'hardi':
+        csdt_model = ConstrainedSDTModel(gtab, ratio = evals[1] / evals[0],  sh_order=8)
+
+    csdt_fit = csdt_model.fit(data, mask)
+
+    sphere = get_sphere('symmetric724')
+
+    odf = csdt_fit.odf(sphere)
+
+    if tv == True:
+
+        odf = tv_denoise_4d(odf, weight=0.1)
+
+    save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
+
+
 def gqi(training, category, snr, denoised, odeconv, tv, method):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
@@ -212,6 +241,59 @@ def gqi(training, category, snr, denoised, odeconv, tv, method):
                                       method='gqi2',
                                       sampling_length=3.,
                                       normalize_peaks=False)
+
+    fit = model.fit(data, mask)
+
+    sphere = get_sphere('symmetric724')   
+
+    odf = fit.odf(sphere)
+
+    if odeconv == True:
+
+        odf_sh = sf_to_sh(odf, sphere, sh_order=8,
+                          basis_type='mrtrix')
+
+        # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
+
+        
+
+        reg_sphere = get_sphere('symmetric724')
+
+        fodf_sh = odf_sh_to_sharp(odf_sh,
+                                  reg_sphere, basis='mrtrix', ratio=3.8 / 16.6,
+                                  sh_order=8, Lambda=1., tau=1.)
+
+        # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'fodf_sh.nii.gz')
+
+        fodf_sh[np.isnan(fodf_sh)]=0
+
+        r, theta, phi = cart2sphere(sphere.x, sphere.y, sphere.z)
+        B_regul, m, n = real_sph_harm_mrtrix(8, theta[:, None], phi[:, None])
+
+        fodf = np.dot(fodf_sh, B_regul.T)
+
+        odf = fodf
+
+    if tv == True:
+
+        odf = tv_denoise_4d(odf, weight=0.1)
+
+    save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
+
+
+def dsid(training, category, snr, denoised, odeconv, tv, method):
+
+    data, affine, gtab, mask, evals, S0, prefix = prepare(training,
+                                                          category,
+                                                          snr,
+                                                          denoised,
+                                                          odeconv,
+                                                          tv,
+                                                          method)
+    
+
+
+    model = DiffusionSpectrumDeconvModel(gtab)
 
     fit = model.fit(data, mask)
 
@@ -277,7 +359,18 @@ if __name__ == '__main__':
     # diffs = csd(training=True, category='dti', snr=10, denoised=2, odeconv=False, tv=False, method='csd_')
     # diffs = csd(training=False, category='dti', snr=10, denoised=0, odeconv=False, tv=False, method='csd_')
     # diffs = csd(training=False, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
+    # diffs = csd(training=True, category='hardi', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
+    # diffs = sdt(training=True, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='sdt_')
+    # diffs = sdt(training=True, category='hardi', snr=10, denoised=0, odeconv=False, tv=False, method='sdt_')
+    # diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_')
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='gqid_')
+
+    # diffs = dsid(training=True, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='dsid_')
+    # diffs = dsid(training=True, category='dsi', snr=10, denoised=2, odeconv=False, tv=False, method='dsid_')
+    diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=False, tv=False, method='dsid_')
+    # diffs = dsid(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='dsidd_')
+    diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='dsidd_')
 
     print diffs
     print time() - t0
