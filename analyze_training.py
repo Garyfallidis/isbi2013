@@ -13,6 +13,7 @@ from dipy.reconst.shm import sf_to_sh
 from dipy.reconst.shm import real_sph_harm_mrtrix
 from dipy.core.geometry import cart2sphere
 from dipy.reconst.csdeconv import odf_sh_to_sharp
+from total_variation import tv_denoise_4d
 
 from dipy.core.ndindex import ndindex
 from dipy.reconst.odf import peak_directions
@@ -167,7 +168,7 @@ def prepare(training, category, snr, denoised, odeconv, tv, method):
     return data, affine, gtab, mask, evals, S0, prefix
 
 
-def csd(training, category, snr, denoised, odeconv, tv, method):
+def csd(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
                                                           category,
@@ -196,7 +197,7 @@ def csd(training, category, snr, denoised, odeconv, tv, method):
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
-def sdt(training, category, snr, denoised, odeconv, tv, method):
+def sdt(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
                                                           category,
@@ -220,12 +221,12 @@ def sdt(training, category, snr, denoised, odeconv, tv, method):
 
     if tv == True:
 
-        odf = tv_denoise_4d(odf, weight=0.1)
+        odf = tv_denoise_4d(odf, weight=weight)
 
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
-def gqi(training, category, snr, denoised, odeconv, tv, method):
+def gqi(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
                                                           category,
@@ -276,12 +277,12 @@ def gqi(training, category, snr, denoised, odeconv, tv, method):
 
     if tv == True:
 
-        odf = tv_denoise_4d(odf, weight=0.1)
+        odf = tv_denoise_4d(odf, weight=weight)
 
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
-def dsid(training, category, snr, denoised, odeconv, tv, method):
+def dsid(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
                                                           category,
@@ -329,7 +330,7 @@ def dsid(training, category, snr, denoised, odeconv, tv, method):
 
     if tv == True:
 
-        odf = tv_denoise_4d(odf, weight=0.1)
+        odf = tv_denoise_4d(odf, weight=weight)
 
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
@@ -364,13 +365,24 @@ if __name__ == '__main__':
     # diffs = sdt(training=True, category='hardi', snr=10, denoised=0, odeconv=False, tv=False, method='sdt_')
     # diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
     # diffs = gqi(training=True, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_')
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='gqid_')
+    # diffs = gqi(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='gqid_')
+
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=False, method='qqid_')
 
     # diffs = dsid(training=True, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='dsid_')
     # diffs = dsid(training=True, category='dsi', snr=10, denoised=2, odeconv=False, tv=False, method='dsid_')
-    diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=False, tv=False, method='dsid_')
+    # diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=False, tv=False, method='dsid_')
     # diffs = dsid(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='dsidd_')
-    diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='dsidd_')
+    # diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='dsidd_')
+
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=False, method='dsid_')
+
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.1', weight=0.1)
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.2', weight=0.2)
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.3', weight=0.3)
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.4', weight=0.4)
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.5', weight=0.5)
+    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.6', weight=0.6)
 
     print diffs
     print time() - t0

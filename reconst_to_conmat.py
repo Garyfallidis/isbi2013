@@ -68,7 +68,6 @@ def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
     return mat, conn_mats, diffs
 
 
-
 if __name__ == '__main__':
 
     data, affine, gtab = get_train_dsi(30)
