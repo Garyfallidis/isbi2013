@@ -65,7 +65,7 @@ def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
         conn_mats.append(conn_mat)
         diffs.append(np.sum(np.abs(conn_mat - golden_mat)))
 
-    return mat, conn_mats, diffs
+    return mat, conn_mats, diffs, ratio
 
 
 if __name__ == '__main__':

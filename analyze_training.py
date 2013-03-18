@@ -111,9 +111,9 @@ def training_check(dres, prefix):
 
     pipe(cmd)
 
-    mat, conn_mats, diffs = streams_to_connmat(dres + prefix + 'streams.trk', seeds_per_vox)
+    mat, conn_mats, diffs, ratio = streams_to_connmat(dres + prefix + 'streams.trk', seeds_per_vox)
 
-    save_pickle(dres + prefix + 'conn_mats.pkl', {'mat': mat, 'conn_mats': conn_mats, 'diffs': diffs})
+    save_pickle(dres + prefix + 'conn_mats.pkl', {'mat': mat, 'conn_mats': conn_mats, 'diffs': diffs, 'ratio':ratio})
 
     print dres + prefix + 'conn_mats.pkl'
 
@@ -226,7 +226,7 @@ def sdt(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
     save_odfs_peaks(training, odf, affine, sphere, dres, prefix)
 
 
-def gqi(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
+def gqi(training, category, snr, denoised, odeconv, tv, method, weight=0.1, sl=3.):
 
     data, affine, gtab, mask, evals, S0, prefix = prepare(training,
                                                           category,
@@ -240,7 +240,7 @@ def gqi(training, category, snr, denoised, odeconv, tv, method, weight=0.1):
 
     model = GeneralizedQSamplingModel(gtab,
                                       method='gqi2',
-                                      sampling_length=3.,
+                                      sampling_length=sl,
                                       normalize_peaks=False)
 
     fit = model.fit(data, mask)
@@ -375,14 +375,43 @@ if __name__ == '__main__':
     # diffs = dsid(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='dsidd_')
     # diffs = dsid(training=True, category='dsi', snr=30, denoised=2, odeconv=True, tv=False, method='dsidd_')
 
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=False, method='dsid_')
+    # diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=False, method='dsid_')
 
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.1', weight=0.1)
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.2', weight=0.2)
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.3', weight=0.3)
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.4', weight=0.4)
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.5', weight=0.5)
-    #diffs = dsid(training=True, category='dsi', snr=10, denoised=1, odeconv=False, tv=True, method='dsid_weight_0.6', weight=0.6)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.1', weight=0.1)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.2', weight=0.2)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.3', weight=0.3)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.4', weight=0.4)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.5', weight=0.5)
+    # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.6', weight=0.6)
 
-    print diffs
+
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_2.6_', sl=2.6)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_2.8_', sl=2.8)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.0_', sl=3.0)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.2_', sl=3.2)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.4_', sl=3.4)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.6_', sl=3.6)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_4.0_', sl=4.0)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_5.0_', sl=5.0)
+
+
+    """
+    diffs = sdt(training=False, category='dti', snr=10, denoised=1, odeconv=False, tv=False, method='sdt_')
+    diffs = sdt(training=False, category='dti', snr=20, denoised=1, odeconv=False, tv=False, method='sdt_')
+    diffs = sdt(training=False, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='sdt_')
+
+    diffs = sdt(training=False, category='hardi', snr=10, denoised=1, odeconv=False, tv=False, method='sdt_')
+    diffs = sdt(training=False, category='hardi', snr=20, denoised=1, odeconv=False, tv=False, method='sdt_')
+    diffs = sdt(training=False, category='hardi', snr=30, denoised=0, odeconv=False, tv=False, method='sdt_')
+
+    diffs = dsid(training=False, category='dsi', snr=10, denoised=2, odeconv=False, tv=False, method='dsid_')
+    diffs = dsid(training=False, category='dsi', snr=20, denoised=2, odeconv=False, tv=False, method='dsid_')
+    diffs = dsid(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='dsid_')
+
+    diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_')
+    diffs = gqi(training=False, category='dsi', snr=20, denoised=2, odeconv=True, tv=False, method='gqid_')
+    diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
+    """
+
+
     print time() - t0

@@ -84,3 +84,5 @@ if __name__ == '__main__':
     peaks = nib.load(sys.argv[1]).get_data()
 
     show_peak_directions(peaks, x=None, y=None, z=25, show_axes=True)
+
+    

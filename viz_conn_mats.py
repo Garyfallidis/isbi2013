@@ -33,6 +33,11 @@ def show_conn_mat(filename):
 
     print 'Diffs: ', d['diffs']
 
+    try:
+        print 'Ratio: ', d['ratio']
+    except KeyError:
+        print 'KeyError: ratio does not exist'    
+
 if __name__ == '__main__':
 	
 	import sys

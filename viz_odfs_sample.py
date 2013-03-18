@@ -12,7 +12,9 @@ def show_odf_sample(filename):
     from dipy.viz import fvtk
     r = fvtk.ren()
     #fvtk.add(r, fvtk.sphere_funcs(odf[:, :, 25], sphere))
-    fvtk.add(r, fvtk.sphere_funcs(odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25], sphere, norm=False))
+    #odf = odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
+    odf = odf[:, :, 25]
+    fvtk.add(r, fvtk.sphere_funcs(odf[:, :, None], sphere, norm=False))
     fvtk.show(r)
 
     #return odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
