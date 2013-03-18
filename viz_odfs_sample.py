@@ -15,10 +15,10 @@ def show_odf_sample(filename):
     fvtk.add(r, fvtk.sphere_funcs(odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25], sphere, norm=False))
     fvtk.show(r)
 
-    return odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
+    #return odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
 
 if __name__ == '__main__':
 	
 	import sys
 
-	odf = show_odf_sample(sys.argv[1])
+	show_odf_sample(sys.argv[1])
