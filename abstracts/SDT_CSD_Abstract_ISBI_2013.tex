@@ -3,8 +3,7 @@
 
 %\usepackage{...}
 
-
-\title{Constrained spherical deconvolution with signal and ODFs.}
+\title{Constrained spherical deconvolution on signal and ODF values.}
 \author{
 	\IEEEauthorblockN{
 		Eleftherios Garyfallidis\IEEEauthorrefmark{1},
@@ -14,22 +13,32 @@
 		Maxime Descoteaux\IEEEauthorrefmark{1}
 	}
 
-	\IEEEauthorblockA{\IEEEauthorrefmark{1} Universit\'e de Sherbrooke, Sherbrooke, Canada}
-	\IEEEauthorblockA{\IEEEauthorrefmark{2} McGill University, Montreal, Canada}
-
-	\thanks{This work is supported by...}
+	\IEEEauthorblockA{\IEEEauthorrefmark{1} Sherbrooke Connectivity Imaging Lab (SCIL), Computer Science department, Universit\'e de Sherbrooke, Sherbrooke, Canada}
+	\IEEEauthorblockA{\IEEEauthorrefmark{2} CNRS, Laboratoire Bordelais de Recherche en Informatique, Bordeaux, France}
 }
-
-
-
 
 \begin{document}
 \maketitle
 
-For the purpose of the ISBI HARDI reconstruction challenge 2013 and for the categories DTI and HARDI we reconstructed the data using the Sharpening Deconvolution Transform \cite{descoteaux-deriche-etal:09}, \cite{Descoteaux2008} and
-Constrained Spherical Deconvolution \cite{tournier-calamante-etal:07}.
+For the purpose of the ISBI HARDI reconstruction challenge 2013 and for the categories DTI and HARDI we reconstructed the diffusion datasets using the Spherical Deconvolution Transform (SDT) \cite{descoteaux-deriche-etal:09}, \cite{Descoteaux2008} and Constrained Spherical Deconvolution (CSD) \cite{tournier-calamante-etal:07}.
 
+The SDT is a sharpening operation which transforms the smooth diffusion ODF into a sharper fiber ODF. The method is inspired by CSD \cite{tournier-calamante-etal:07} with the main difference that the CSD is applied directly to the initial signal and the SDT directly to the ODFs. 
 
+The idea here is that an ODF for example the analytical Q-ball ODF $\psi_{QBI}$ can be formed by convolution between the single fiber diffusion ODF kernel, $R$ and the true fiber ODF $\psi_{SDT}$. 
+
+\begin{equation}
+\psi_{QBI}(\mathbf{u})=\displaystyle\int_{|w|=1} R(\mathbf{u} \cdot \mathbf{w}) \psi_{SDT}(\mathbf{w}) dw\label{eq:Conv}
+\end{equation}
+
+Therefore, the deconvolution of $\psi_{QBI}$ can recover a sharper $\psi_{SDT}$.
+
+\begin{equation}
+\psi_{SDT}(\mathbf{u})=\displaystyle\sum_{j=1}^{R}2\pi P_{l_{j}}(0) \frac{c_j}{f_j}Y_{j}(\mathbf{u})\label{eq:ODF_SDT}
+\end{equation}
+
+The deconvolution is a fast converging iterative process. The main choice to be considered both for SDT and CSD is the estimation of the single fiber response function $R$. We assume that $R$ is coming from a prolate tensor. For this purpose we found the tensors with FA > $0.7$ and 
+
+The DW datasets for SNR 10 and 20 were denoised with the adaptive nonlocal means \cite{manjon-coupe:10} using a rician noise model. As proposed in \cite{descoteaux-wiest-daessle-etal:08}, each DW images were processed independently.
 
 Hello \cite{manjon-coupe:10}, \cite{descoteaux-deriche-etal:09}, \cite{Descoteaux2008}, \cite{tournier-calamante-etal:07}.
 
@@ -103,40 +112,6 @@ Hello \cite{manjon-coupe:10}, \cite{descoteaux-deriche-etal:09}, \cite{Descoteau
 
 ...
 
-...
-
-...
-
-...
-
-...
-
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-
 
 ...
 
@@ -181,43 +156,6 @@ Hello \cite{manjon-coupe:10}, \cite{descoteaux-deriche-etal:09}, \cite{Descoteau
 ...
 
 ...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
-...
-
 
 \bibliographystyle{ieeetr}
 \bibliography{/home/eleftherios/Documents/scil-bibtex/scilBibTex}
