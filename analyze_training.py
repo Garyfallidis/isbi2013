@@ -138,7 +138,8 @@ def prepare(training, category, snr, denoised, odeconv, tv, method):
     if training:
         mask = nib.load('wm_mask_hardi_01.nii.gz').get_data()
     else:
-        mask = np.ones(data.shape[:-1])
+        #mask = np.ones(data.shape[:-1])
+        mask = nib.load('test_hardi_30_den=1_fa_0025_dilate2_mask.nii.gz').get_data()
 
     tenmodel = TensorModel(gtab)
 
@@ -384,18 +385,20 @@ if __name__ == '__main__':
     # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.5', weight=0.5)
     # diffs = gqi(training=True, category='dsi', snr=10, denoised=1, odeconv=True, tv=True, method='gqid_weight_0.6', weight=0.6)
 
-
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_2.6_', sl=2.6)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_2.8_', sl=2.8)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.0_', sl=3.0)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.2_', sl=3.2)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.4_', sl=3.4)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_3.6_', sl=3.6)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_4.0_', sl=4.0)
-    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='qqid_5.0_', sl=5.0)
-
-
     """
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_2.6_', sl=2.6)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_2.8_', sl=2.8)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_3.0_', sl=3.0)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_3.2_', sl=3.2)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_3.4_', sl=3.4)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_3.6_', sl=3.6)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
+    diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_5.0_', sl=5.0)
+    """
+
+    #diffs = gqi(training=True, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='gqi_4.0_', sl=4.0)
+    """
+        
     diffs = sdt(training=False, category='dti', snr=10, denoised=1, odeconv=False, tv=False, method='sdt_')
     diffs = sdt(training=False, category='dti', snr=20, denoised=1, odeconv=False, tv=False, method='sdt_')
     diffs = sdt(training=False, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='sdt_')
@@ -404,6 +407,14 @@ if __name__ == '__main__':
     diffs = sdt(training=False, category='hardi', snr=20, denoised=1, odeconv=False, tv=False, method='sdt_')
     diffs = sdt(training=False, category='hardi', snr=30, denoised=0, odeconv=False, tv=False, method='sdt_')
 
+    diffs = csd(training=False, category='dti', snr=10, denoised=1, odeconv=False, tv=False, method='csd_')
+    diffs = csd(training=False, category='dti', snr=20, denoised=1, odeconv=False, tv=False, method='csd_')
+    diffs = csd(training=False, category='dti', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
+
+    diffs = csd(training=False, category='hardi', snr=10, denoised=1, odeconv=False, tv=False, method='csd_')
+    diffs = csd(training=False, category='hardi', snr=20, denoised=1, odeconv=False, tv=False, method='csd_')
+    diffs = csd(training=False, category='hardi', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
+
     diffs = dsid(training=False, category='dsi', snr=10, denoised=2, odeconv=False, tv=False, method='dsid_')
     diffs = dsid(training=False, category='dsi', snr=20, denoised=2, odeconv=False, tv=False, method='dsid_')
     diffs = dsid(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='dsid_')
@@ -411,7 +422,11 @@ if __name__ == '__main__':
     diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_')
     diffs = gqi(training=False, category='dsi', snr=20, denoised=2, odeconv=True, tv=False, method='gqid_')
     diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
+
     """
 
-
+    diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
+    diffs = gqi(training=False, category='dsi', snr=20, denoised=2, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
+    diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
+    
     print time() - t0

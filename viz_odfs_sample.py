@@ -11,10 +11,11 @@ def show_odf_sample(filename):
 
     from dipy.viz import fvtk
     r = fvtk.ren()
-    #fvtk.add(r, fvtk.sphere_funcs(odf[:, :, 25], sphere))
-    #odf = odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
-    odf = odf[:, :, 25]
-    fvtk.add(r, fvtk.sphere_funcs(odf[:, :, None], sphere, norm=False))
+    #odf = odf[:, :, 25]
+    #fvtk.add(r, fvtk.sphere_funcs(odf[:, :, None], sphere, norm=True))
+    odf = odf[:, 22, :]
+    fvtk.add(r, fvtk.sphere_funcs(odf[:, None, :], sphere, norm=True))
+
     fvtk.show(r)
 
     #return odf[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
