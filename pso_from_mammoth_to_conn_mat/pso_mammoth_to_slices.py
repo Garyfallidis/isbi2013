@@ -4,7 +4,8 @@ from dipy.sims.voxel import MultiTensor
 from load_data import get_train_dti
 
 
-mask = nib.load('wm_mask_hardi_01.nii.gz').get_data()
+# mask = nib.load('/media/Data/work/isbi2013/wm_mask_hardi_01.nii.gz').get_data()
+mask = nib.load('/media/Data/work/isbi2013/test_hardi_30_den=1_fa_0025_dilate2_mask.nii.gz').get_data()
 
 _, affine, gtab = get_train_dti()
 
@@ -45,8 +46,10 @@ def parse_params(params, NC, iso, fr):
 
     return np.array(mevals), np.array(angles), np.array(fractions).T
 
-f = open('out_pso_dtiPier_hardi_hardiPier', 'r')
-mode = 0
+# f = open('/media/Data/work/isbi2013/pso_from_mammoth_to_conn_mat/out_pso_dtiPier_hardi_hardiPier', 'r')
+f = open('/media/Data/work/isbi2013/testing_data_result/with_frac.out', 'r')
+# f = open('/media/Data/work/isbi2013/testing_data_result/with_frac.out', 'r')
+mode = 2
 # f = open('out__pso_testDataSlice__1', 'r');mode=1
 # f = open('out__pso_testDataSlice__23', 'r');mode=1
 
@@ -100,7 +103,7 @@ while(line != ''):
             typ = 1  # pier
             category = 'hardi_'
         filename = category + 'pso_sticks_slice={}_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_type={}'.format(slicez, params[0], params[1], params[2], params[3], params[4], params[5], typ)
-    if mode == 1:
+    elif mode == 1:
         if params[6] == 0:
             typ = 0  # plain
             category = 'dti_'
@@ -108,10 +111,21 @@ while(line != ''):
             typ = 3  # nlm gauss
             category = 'dti_'
         filename = category + 'pso_sticks_slice={}_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_type={}'.format(slicez, params[0], params[1], params[2], params[3], params[4], params[5], typ)
+    elif mode == 2:
+        if params[6] == 0:
+            category = 'dti_'
+        if params[6] == 1:
+            category = 'hardi_'
 
-    nib.save(nib.Nifti1Image(sliceXY, affine), '/media/Data/work/isbi2013/pso_sticks_slices/' + filename + '.nii.gz')
+        if params[5] == 30:
+            typ = 5  # plain
+        else:
+            typ = 6  # pier
+        filename = category + 'pso_sticks_slice={}_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_type={}'.format(slicez, params[0], params[1], params[2], params[3], params[4], params[5], typ)
 
-    # print('saved! NC = {} iso = {} fr = {} snr = {} typ = {} slic = {}'.format(params[0],params[1],params[2],params[5],params[6],slicez))
+    nib.save(nib.Nifti1Image(sliceXY, affine), '/media/Data/work/isbi2013/testing_data_result/pso_sticks_slices/' + filename + '.nii.gz')
+
+    print('saved! NC = {} iso = {} fr = {} snr = {} typ = {} slic = {}'.format(params[0],params[1],params[2],params[5],params[6],slicez))
 
     line = f.readline()
 

@@ -21,7 +21,7 @@ for NC in [1, 2, 3]:
             for snr in [30, 10]:
                 for typ in [0, 1, 2, 3]:
                     for ang_t in [0, 10, 20, 30]:
-                        for category in ['dti_', 'hardi_']:
+                        for category in ['dti', 'hardi']:
 
                             filename = '{}_pso_sticks_sel={}_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_type={}'.format(category, ang_t, NC, iso, fr, Np, Ni, snr, typ)
                             filepath = '/media/Data/work/isbi2013/pso_sticks/' + filename + '.nii.gz'
@@ -45,18 +45,18 @@ for NC in [1, 2, 3]:
 
                                                 maximas = []
 
-                                                    nan_alert = 0
+                                                nan_alert = 0
 
-                                for ii in range(2 * NC):
-                                    if ~np.isnan(np.nansum(dd[:, ii])):
-                                        maximas.append(np.argsort(dd[:, ii])[0])
-                                    else:
-                                        nan_alert += 1
+                                                for ii in range(2 * NC):
+                                                    if ~np.isnan(np.nansum(dd[:, ii])):
+                                                        maximas.append(np.argsort(dd[:, ii])[0])
+                                                    else:
+                                                        nan_alert += 1
 
-                                            odf = np.zeros(sphere.vertices.shape[0])
-                                            odf[maximas] = 1 / ((2. * NC) - nan_alert)
+                                                odf = np.zeros(sphere.vertices.shape[0])
+                                                odf[maximas] = 1 / ((2. * NC) - nan_alert)
 
-                                            odf_field[xx, yy, zz] = odf
+                                                odf_field[xx, yy, zz] = odf
 
                                 filename2 = '{}_pso_odf_sf_sel={}_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_type={}'.format(category, ang_t, NC, iso, fr, Np, Ni, snr, typ)
 

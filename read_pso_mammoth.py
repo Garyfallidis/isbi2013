@@ -45,8 +45,8 @@ def parse_params(params, NC, iso, fr):
 
     return np.array(mevals), np.array(angles), np.array(fractions).T
 
-
-f = open('out__pso_testDataSlice__23', 'r')
+f = open('out_pso_dtiPier_hardi_hardiPier', 'r')
+# f = open('out__pso_testDataSlice__23', 'r')
 # f = open('out__pso_testDataSlice__23', 'r')
 
 line = f.readline()
@@ -88,10 +88,10 @@ while(line!=''):
 
 		sliceXY[dat[0],dat[1]] = sticks
 
-	filename = 'sticks_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_den={}_slic={}'.format(params[0],params[1],params[2],params[3],params[4],params[5],params[6],slicez)
+	filename = 'sticks_NC={}_iso={}_fr={}_Np={}_Ni={}_snr={}_typ={}_slic={}'.format(params[0],params[1],params[2],params[3],params[4],params[5],params[6],slicez)
 	nib.save(nib.Nifti1Image(sliceXY, affine), '/media/Data/work/isbi2013/slices_out_pso/' + filename + '.nii.gz')
 
-	print('saved! NC = {} iso = {} fr = {} snr = {} den = {} slic = {}'.format(params[0],params[1],params[2],params[5],params[6],slicez))
+	print('saved! NC = {} iso = {} fr = {} snr = {} typ = {} slic = {}'.format(params[0],params[1],params[2],params[5],params[6],slicez))
 
 	line = f.readline()
 
