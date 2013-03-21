@@ -25,7 +25,7 @@ For the purpose of the ISBI HARDI reconstruction challenge 2013 and for the cate
 
 The SDT is a sharpening operation which transforms the smooth diffusion ODF into a sharper fiber ODF. The method is inspired by CSD \cite{tournier-calamante-etal:07} with, the main difference that the CSD is applied directly to the initial signal and the SDT directly to the ODF. 
 
-The idea here is that an ODF, for example the analytical Q-ball ODF $\psi_{QBI}$, can be formed by convolution between the single fiber diffusion ODF kernel $R$, and the true fiber ODF $\psi_{SDT}$. 
+The idea here is that an ODF, for example the analytical Q-ball ODF $\psi_{QBI}$, can be formed by the convolution between the single fiber diffusion ODF kernel $R$ and the true fiber ODF $\psi_{SDT}$. 
 \begin{equation}
 \psi_{QBI}(\mathbf{u})=\displaystyle\int_{|w|=1} R(\mathbf{u} \cdot \mathbf{w}) \psi_{SDT}(\mathbf{w}) dw\label{eq:Conv}
 \end{equation}
@@ -58,7 +58,7 @@ C) CSD HARDI, D) SDT HARDI.}
 \end{figure}
 
  In order to find the best parameters for the methods described here we created a connectivity matrix after generating deterministic streamlines from the ODFs of the training set. We finally selected the parameters which minimized the number of missing and false bundles in the training set and used those with the test data.
- In Fig.1 we see results from an ROI from slice Y=22 of the testing dataset reconstructed with CSD in A and C and with SDT in B and D. The spherical harmonic order used for the DTI datasests was 6 and for HARDI 8 both for CSD and SDT. In Fig. 1 we observe that SDT performed better in the DTI category but CSD performed slightly better the HARDI category as it managed to resolve more crossing fibers. For the challenge we submitted results with ODFs saved as spherical harmonic coefficients. The source code for the methods described in this paper is available in dipy.org.
+ In Fig.1 we see results from an ROI from slice Y=22 of the testing dataset reconstructed with CSD in A and C and with SDT in B and D. The spherical harmonic order used for the DTI datasests was 6 and for HARDI 8 both for CSD and SDT. In Fig. 1 we observe that SDT performed better in the DTI category but CSD performed slightly better the HARDI category as it managed to resolve more crossing fibers. For the challenge we submitted all results with ODFs saved as spherical harmonic coefficients of order 8. The source code for the methods described in this paper is available at dipy.org.
 
 \bibliographystyle{ieeetr}
 \bibliography{/home/eleftherios/Documents/scil-bibtex/scilBibTex}
