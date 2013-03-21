@@ -13,7 +13,9 @@ def show_odf_sample(filename):
     r = fvtk.ren()
     #odf = odf[:, :, 25]
     #fvtk.add(r, fvtk.sphere_funcs(odf[:, :, None], sphere, norm=True))
-    odf = odf[:, 22, :]
+    #odf = odf[:, 22, :]
+    #odf = odf[14: 23, 22, 34: 43]
+    odf = odf[14:24, 22, 23:33]
     fvtk.add(r, fvtk.sphere_funcs(odf[:, None, :], sphere, norm=True))
 
     fvtk.show(r)
