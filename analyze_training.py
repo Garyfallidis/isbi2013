@@ -257,8 +257,6 @@ def gqi(training, category, snr, denoised, odeconv, tv, method, weight=0.1, sl=3
 
         # # nib.save(nib.Nifti1Image(odf_sh, affine), model_tag + 'odf_sh.nii.gz')
 
-        
-
         reg_sphere = get_sphere('symmetric724')
 
         fodf_sh = odf_sh_to_sharp(odf_sh,
@@ -425,8 +423,12 @@ if __name__ == '__main__':
 
     """
 
+    diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='gqi_4.0_', sl=4.0)
+
+    """
     diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
     diffs = gqi(training=False, category='dsi', snr=20, denoised=2, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
     diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
-    
+    """
+
     print time() - t0
