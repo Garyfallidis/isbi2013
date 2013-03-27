@@ -57,8 +57,9 @@ if __name__ == '__main__':
     sphere = Sphere(xyz=vertices)    
     SF = peaks_to_sf(peaks, sphere)
     
-    SF_img = nib.Nifti1Image(SF.astype(np.float32), refaff)
+    SF_img = nib.Nifti1Image(SF.astype(np.float), refaff)
     nib.save(SF_img, 'sf_peaks.nii')
+
 
 
     

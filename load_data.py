@@ -44,15 +44,23 @@ def get_test_dti(snr=30, denoised=None):
     return read_data(fimg, fbvals, fbvecs)
 
 
-def get_train_hardi(snr=30, denoised=None):
+def get_train_hardi(snr=30, denoised=None, Coupe=None):
     if not denoised == None:
-        den = 'denoised'
+        den = '_denoised_nlmeans'
+
+        if not Coupe == None:
+            den0 = 'Coupe/'
+            den = '_AONLM_1.00_rician'
+        else :
+            den0 = 'NLM_Gaussian/'                
     else:
         den = ''
+        den0 = ''
 
-    fimg = dname + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
+    fimg = dname + den0 + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
     fbvals = dname + 'hardi-scheme.bval'
     fbvecs = dname + 'hardi-scheme.bvec'
+    print fimg
     return read_data(fimg, fbvals, fbvecs)
 
 

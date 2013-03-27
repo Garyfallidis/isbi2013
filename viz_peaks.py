@@ -48,7 +48,7 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
 
         peak = peaks[index]
         directions = peak.reshape(peak.shape[0] / 3, 3)
-
+        
         pos = np.array(index)
         if x is not None:
             pos[0] = x
@@ -56,7 +56,7 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
             pos[1] = y
         if z is not None:
             pos[2] = z
-
+            
         for i in xrange(directions.shape[0]):
 
             if np.linalg.norm(directions[i]) != 0:
@@ -79,6 +79,5 @@ def show_peak_directions(peaks, scale=0.3, x=5, y=None, z=None, show_axes=False)
 
 
 if __name__ == '__main__':
-
     peaks = nib.load('peaks.nii.gz').get_data()
-    show_peak_directions(peaks, x=None, y=None, z=5, show_axes=True)
+    show_peak_directions(peaks, x=None, y=None, z=0, show_axes=True)
