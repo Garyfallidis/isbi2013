@@ -61,6 +61,3 @@ if __name__ == '__main__':
     nib.save(SF_img, 'sf_peaks.nii')
 
 
-
-    
-

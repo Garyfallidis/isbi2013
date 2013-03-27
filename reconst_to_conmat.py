@@ -29,8 +29,8 @@ def pipe(cmd):
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
     sto = p.stdout.readlines()
     ste = p.stderr.readlines()
-    print(sto)
-    print(ste)
+    #print(sto)
+    #print(ste)
 
 
 def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
@@ -65,8 +65,7 @@ def streams_to_connmat(filename, seeds_per_voxel=1, thr=[0.25, 0.5, 0.75]):
         conn_mats.append(conn_mat)
         diffs.append(np.sum(np.abs(conn_mat - golden_mat)))
 
-    return mat, conn_mats, diffs
-
+    return mat, conn_mats, diffs, ratio
 
 
 if __name__ == '__main__':
@@ -152,10 +151,10 @@ if __name__ == '__main__':
     fvtk.show(r)
     fvtk.clear(r)
 
-    odf_var = tv_denoise_4d(odf, weight=0.1)
-    fvtk.add(r, fvtk.sphere_funcs(odf_var, sphere))
-    fvtk.show(r)
-    fvtk.clear(r)
+    # odf_var = tv_denoise_4d(odf, weight=0.1)
+    # fvtk.add(r, fvtk.sphere_funcs(odf_var, sphere))
+    # fvtk.show(r)
+    # fvtk.clear(r)
 
     # #odf_sh2 = odf_sh[25 - 10:25 + 10, 25 - 10:25 + 10, 25]
     # odf2 = np.dot(odf_sh, B_regul.T)
