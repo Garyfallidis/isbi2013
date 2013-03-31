@@ -88,6 +88,7 @@ def get_train_hardi(snr=30, denoised=0):
     fimg = dname + dname2 + 'training-data_DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
     fbvals = dname + 'hardi-scheme.bval'
     fbvecs = dname + 'hardi-scheme.bvec'
+    print fimg
     return read_data(fimg, fbvals, fbvecs)
 
 
