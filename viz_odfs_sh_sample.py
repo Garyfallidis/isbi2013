@@ -1,13 +1,16 @@
 import nibabel as nib
+from dipy.reconst.shm import sh_to_sf
 
 
 def show_odf_sample(filename):
 
-    odf = nib.load(filename).get_data()
+    odf_sh = nib.load(filename).get_data()
 
     from dipy.data import get_sphere
 
     sphere = get_sphere('symmetric724')
+
+    odf = sh_to_sf(odf_sh, sphere, 8, 'mrtrix')
 
     from dipy.viz import fvtk
     r = fvtk.ren()

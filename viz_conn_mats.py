@@ -1,4 +1,5 @@
 from dipy.io.pickles import load_pickle
+from dipy.reconst.dti import TensorModel
 
 
 def show_conn_mat(filename):

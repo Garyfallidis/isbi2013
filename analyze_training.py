@@ -413,6 +413,8 @@ if __name__ == '__main__':
     diffs = csd(training=False, category='hardi', snr=20, denoised=1, odeconv=False, tv=False, method='csd_')
     diffs = csd(training=False, category='hardi', snr=30, denoised=0, odeconv=False, tv=False, method='csd_')
 
+    """
+
     diffs = dsid(training=False, category='dsi', snr=10, denoised=2, odeconv=False, tv=False, method='dsid_')
     diffs = dsid(training=False, category='dsi', snr=20, denoised=2, odeconv=False, tv=False, method='dsid_')
     diffs = dsid(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='dsid_')
@@ -420,10 +422,8 @@ if __name__ == '__main__':
     diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_')
     diffs = gqi(training=False, category='dsi', snr=20, denoised=2, odeconv=True, tv=False, method='gqid_')
     diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=True, tv=False, method='gqid_')
-
-    """
-
-    diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='gqi_4.0_', sl=4.0)
+    
+    #diffs = gqi(training=False, category='dsi', snr=30, denoised=0, odeconv=False, tv=False, method='gqi_4.0_', sl=4.0)
 
     """
     diffs = gqi(training=False, category='dsi', snr=10, denoised=2, odeconv=True, tv=False, method='gqid_4.0_', sl=4.0)
