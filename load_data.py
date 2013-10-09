@@ -114,6 +114,37 @@ def get_test_hardi(snr=30, denoised=0):
     fbvecs = dname + 'hardi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)
 
+def get_jc_hardi(snr=20):
+    
+    if snr == 0 :
+        fimg = dname + 'DWIS_jc-hardi-scheme_no-noise.nii.gz'
+    else :
+        #print('Only SNR 20 supported for now')                
+        fimg = dname + 'DWIS_jc-hardi-scheme_SNR-20.nii.gz'
+
+    fbvals = dname + 'jc-hardi-scheme.bval'
+    fbvecs = dname + 'jc-hardi-scheme.bvec'
+    return read_data(fimg, fbvals, fbvecs)
+
+def get_test_wm_mask(nb):
+    
+    if nb < 10 :
+        fimg = dname + 'jc_bundles/0' + str(nb) + '.nii'
+    else :
+        fimg = dname + 'jc_bundles/' + str(nb) + '.nii'
+
+    print(fimg)
+    img = nib.load(fimg)
+    data = img.get_data()
+    return data
+
+def get_test_mask():
+             
+    fimg = dname + 'wm.nii'
+    img = nib.load(fimg)
+    data = img.get_data()
+    return data
+
 
 def get_train_dsi(snr=30, denoised=0):
     if denoised == 0:
