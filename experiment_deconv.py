@@ -9,7 +9,7 @@ from dipy.reconst.csdeconv import ConstrainedSphericalDeconvModel, ConstrainedSD
 from dipy.data import get_sphere
 from dipy.reconst.shm import sf_to_sh
 
-from load_data import get_jc_hardi, get_test_mask
+from load_data import get_jc_hardi, get_test_mask, get_test_hardi
 from show_streamlines import show_streamlines
 from conn_mat import connectivity_matrix
 
@@ -18,15 +18,18 @@ from dipy.io.pickles import save_pickle, load_pickle
 from time import time
 
 
+threshold = 0.75
+
 if __name__ == '__main__':
-    data, affine, gtab = get_jc_hardi(20)
+    data, affine, gtab = get_test_hardi(snr=20, denoised=0)
     mask = get_test_mask()
     
     tenmodel = TensorModel(gtab)
-    tenfit = tenmodel.fit(xdata, mask)
+    tenfit = tenmodel.fit(data, mask)
     FA = fractional_anisotropy(tenfit.evals)
     FA[np.isnan(FA)] = 0
-    indices = np.where(FA > 0.5)
+    indices = np.where(FA > threshold)
+    print(FA[mask].max())
 
     nib.save(nib.Nifti1Image(FA.astype('float32'), affine), 
              'FA.nii.gz')
@@ -39,7 +42,6 @@ if __name__ == '__main__':
     l01 = np.mean(lambdas, axis = 0) 
     evals = np.array([l01[0], l01[1], l01[1]])
     print evals, l01[1] / l01[0], S0
-
     ratio = l01[1] / l01[0]
 
     from dipy.data import get_sphere
