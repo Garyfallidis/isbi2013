@@ -18,20 +18,20 @@ from dipy.io.pickles import save_pickle, load_pickle
 from time import time
 
 
-threshold = 0.75
+threshold = 0.78
 Noise = 0
 if __name__ == '__main__':
     data, affine, gtab = get_test_hardi(snr=Noise, denoised=0)
     mask = get_test_mask()
     
-    print(data.min())
+    #print(data.min())
     if data.max() <= 1 :
         if data.min() != 0 :
             data = data / data.min()
         else:
             data = data * 1000
     
-    print(data.min())
+    #print(data.min())
     tenmodel = TensorModel(gtab)
     tenfit = tenmodel.fit(data, mask)
     FA = fractional_anisotropy(tenfit.evals)
