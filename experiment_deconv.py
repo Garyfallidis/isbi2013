@@ -18,7 +18,7 @@ from dipy.io.pickles import save_pickle, load_pickle
 from time import time
 
 
-threshold = 0.78
+threshold = 0.75
 Noise = 0
 if __name__ == '__main__':
     data, affine, gtab = get_test_hardi(snr=Noise, denoised=0)
