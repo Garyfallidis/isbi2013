@@ -17,13 +17,15 @@ from dipy.io.pickles import save_pickle, load_pickle
 
 from time import time
 
-threshold = 0.75
+threshold = 0.78
 from dipy.data import get_sphere
 sphere = get_sphere('symmetric724')
-dname = 'HARDI_SNR20/'
+#dname = 'HARDI_SNR20/'
+dname = 'HARDI_NoNoise/'
+Noise = 0
 
 if __name__ == '__main__':
-    data, affine, gtab = get_test_hardi(snr=20, denoised=0)    
+    data, affine, gtab = get_test_hardi(snr=Noise, denoised=0)    
     mask = get_test_mask()
     tenmodel = TensorModel(gtab)
     tenfit = tenmodel.fit(data, mask)
@@ -31,8 +33,7 @@ if __name__ == '__main__':
     FA[np.isnan(FA)] = 0
     nib.save(nib.Nifti1Image(FA.astype('float32'), affine), 
              'FA.nii.gz')
-    
-    
+        
     responses = np.array([[ 0.0017,  0.0002,  0.0002],
                           [ 0.0017,  0.0003,  0.0003],
                           [ 0.0017,  0.0004,  0.0004],

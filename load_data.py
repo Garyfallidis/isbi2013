@@ -109,7 +109,11 @@ def get_test_hardi(snr=30, denoised=0):
         den = '_denoised_nlmeans'
         dname2 = 'elef_testing/NLM_Gaussian/'
 
-    fimg = dname + dname2 + 'DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
+    if snr != 0 :
+        fimg = dname + dname2 + 'DWIS_hardi-scheme_SNR-' + str(snr) + den + '.nii.gz'
+    else :
+        fimg = dname + 'DWIS_hardi-scheme_no-noise.nii.gz'
+
     fbvals = dname + 'hardi-scheme.bval'
     fbvecs = dname + 'hardi-scheme.bvec'
     return read_data(fimg, fbvals, fbvecs)

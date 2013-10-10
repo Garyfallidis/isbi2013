@@ -19,18 +19,26 @@ from time import time
 
 
 threshold = 0.75
-
+Noise = 0
 if __name__ == '__main__':
-    data, affine, gtab = get_test_hardi(snr=20, denoised=0)
+    data, affine, gtab = get_test_hardi(snr=Noise, denoised=0)
     mask = get_test_mask()
     
+    print(data.min())
+    if data.max() <= 1 :
+        if data.min() != 0 :
+            data = data / data.min()
+        else:
+            data = data * 1000
+    
+    print(data.min())
     tenmodel = TensorModel(gtab)
     tenfit = tenmodel.fit(data, mask)
     FA = fractional_anisotropy(tenfit.evals)
     FA[np.isnan(FA)] = 0
     indices = np.where(FA > threshold)
     print(FA[mask].max())
-
+    
     nib.save(nib.Nifti1Image(FA.astype('float32'), affine), 
              'FA.nii.gz')
 
@@ -67,7 +75,7 @@ if __name__ == '__main__':
 
     shm_coeff = peaks.shm_coeff
     nib.save(nib.Nifti1Image(shm_coeff.astype('float32'), affine), 
-             'fodf_csd_sh.nii.gz')
+             'fodf_csd_sh' + str(threshold) + '_snr' + str(Noise) + '.nii.gz')
 
     myPeaksDirs = peaks.peak_dirs
     test = np.reshape(myPeaksDirs, [myPeaksDirs.shape[0], 
@@ -75,7 +83,7 @@ if __name__ == '__main__':
                                     myPeaksDirs.shape[2], 
                                     myPeaksDirs.shape[3]*myPeaksDirs.shape[4]])    
     nib.save(nib.Nifti1Image(test.astype('float32'), affine), 
-             'peaks_csd.nii.gz') 
+             'peaks_csd' + str(threshold) + '_snr' + str(Noise) +  '.nii.gz') 
 
     sdt_model = ConstrainedSDTModel(gtab, ratio)
     from dipy.reconst.odf import peaks_from_model
@@ -96,7 +104,7 @@ if __name__ == '__main__':
 
     shm_coeff = peaks.shm_coeff
     nib.save(nib.Nifti1Image(shm_coeff.astype('float32'), affine), 
-             'fodf_sdt_sh.nii.gz')
+             'fodf_sdt_sh' + str(threshold) + '_snr' + str(Noise) +  '.nii.gz')
 
     myPeaksDirs = peaks.peak_dirs
     test = np.reshape(myPeaksDirs, [myPeaksDirs.shape[0], 
@@ -104,4 +112,4 @@ if __name__ == '__main__':
                                     myPeaksDirs.shape[2], 
                                     myPeaksDirs.shape[3]*myPeaksDirs.shape[4]])    
     nib.save(nib.Nifti1Image(test.astype('float32'), affine), 
-             'peaks_sdt.nii.gz') 
+             'peaks_sdt' + str(threshold) + '_snr' + str(Noise) +  '.nii.gz') 
