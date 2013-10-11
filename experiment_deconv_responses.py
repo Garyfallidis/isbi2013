@@ -17,12 +17,12 @@ from dipy.io.pickles import save_pickle, load_pickle
 
 from time import time
 
-threshold = 0.78
+threshold = 0.75
 from dipy.data import get_sphere
 sphere = get_sphere('symmetric724')
-#dname = 'HARDI_SNR20/'
-dname = 'HARDI_NoNoise/'
-Noise = 0
+dname = 'HARDI_SNR20/'
+#dname = 'HARDI_NoNoise/'
+Noise = 20
 
 if __name__ == '__main__':
     data, affine, gtab = get_test_hardi(snr=Noise, denoised=0)    
