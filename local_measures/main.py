@@ -163,7 +163,8 @@ for filename in SUBMISSIONs:
                 A = np.zeros( (M_true, M_est) )
                 for i in range(0,M_true) :
                     for j in range(0,M_est) :
-                        err = acos( min( 1.0, abs(np.dot( DIR_true[:,i], DIR_est[:,j] )) ) ) # crop to 1 for internal precision
+                        err = acos( min( 1.0, abs(np.dot( DIR_true[:,i], 
+                                                          DIR_est[:,j] )) ) ) # crop to 1 for internal precision
                         A[i,j] = min( err, pi-err) / pi * 180;
 
                 # compute the "base" error
